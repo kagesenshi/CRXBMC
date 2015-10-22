@@ -1024,6 +1024,7 @@ def start_playback(args):
     quality     = res_quality[int(args._addon.getSetting("video_quality"))]
 
     fields = "".join(["media.episode_number,",
+                      "media.series_name,",
                       "media.name,",
                       "media.playhead,",
                       "media.description,",
@@ -1064,8 +1065,12 @@ def start_playback(args):
                 url = allurl['low']
 
             item = xbmcgui.ListItem(args.name, path=url)
-            item.setInfo(type="Video", infoLabels={"Title":     args.name,
-                                                   "playcount": playcount})
+            # TVShowTitle, Season, and Episode are used by the Trakt.tv add-on to determine what is being played
+            item.setInfo(type="Video", infoLabels={"Title":       args.name,
+                                                   "TVShowTitle": request['data']['series_name'],
+                                                   "Season": args.season,
+                                                   "Episode": request['data']['episode_number'],
+                                                   "playcount":   playcount})
             item.setThumbnailImage(args.icon)
             item.setProperty('TotalTime',  args.duration)
             item.setProperty('ResumeTime', resumetime)
