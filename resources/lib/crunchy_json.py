@@ -781,7 +781,7 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                      isFolder=False,
                      queued=queued)
 
-    crm.endofdirectory('title')
+    crm.endofdirectory('none')
 
 
 def history(args):
