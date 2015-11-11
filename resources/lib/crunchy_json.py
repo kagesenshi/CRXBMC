@@ -545,7 +545,7 @@ def list_categories(args):
                           'filterx':    'tag:' + i['tag']},
                          isFolder=True)
 
-    crm.endofdirectory('label')
+    crm.endofdirectory('none')
 
 
 def list_collections(args):
@@ -592,7 +592,7 @@ def list_collections(args):
                              isFolder=True,
                              queued=queued)
 
-    crm.endofdirectory('title')
+    crm.endofdirectory('none')
 
 
 def list_media(args):
