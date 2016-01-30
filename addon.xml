@@ -8,7 +8,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
-		<language>en es no de fr jp</language>
+		<language>en es no de fr ja</language>
 		<summary lang="en">Watch videos from Crunchyroll.com!</summary>
 		<summary lang="no">Se på videoer fra crunchyroll.com!</summary>
 		<description lang="en">Crunchyroll is an online video service and community that offers full-length episodes and movies of the very best in Japanese anime and Asian entertainment.</description>
