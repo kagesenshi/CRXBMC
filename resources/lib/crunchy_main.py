@@ -70,10 +70,12 @@ def encode(f):
 
 def endofdirectory(sortMethod='none'):
     """Mark end of directory listing.
-
-    """
+	
+    
     # Set sortmethod to something xbmc can use
-    if sortMethod == 'title':
+    if  args.user_data['video_sort'] == false:
+        sortMethod = xbmcplugin.SORT_METHOD_NONE
+    elif sortMethod == 'title':
         sortMethod = xbmcplugin.SORT_METHOD_TITLE
     elif sortMethod == 'none':
         sortMethod = xbmcplugin.SORT_METHOD_NONE
@@ -81,10 +83,11 @@ def endofdirectory(sortMethod='none'):
         sortMethod = xbmcplugin.SORT_METHOD_DATE
     elif sortMethod == 'label':
         sortMethod = xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE
+	"""
 
     # Sort methods are required in library mode
     xbmcplugin.addSortMethod(int(sys.argv[1]),
-                             sortMethod)
+                             xbmcplugin.SORT_METHOD_NONE)
 
     # Let xbmc know the script is done adding items to the list
     dontAddToHierarchy = False

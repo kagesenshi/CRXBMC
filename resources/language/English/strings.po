@@ -198,3 +198,7 @@ msgstr ""
 msgctxt "#30505"
 msgid "Add-on settings"
 msgstr ""
+
+msgctxt "#30506"
+msgid "Enable Video Sorting"
+msgstr ""
