@@ -651,7 +651,7 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                            if mode == "history"
                            else series_name)
         series_name = (media['most_likely_media']['series_name']
-                           if mode == "queue"
+                           if (mode == "queue" and 'most_likely_media' in media)
                            else series_name)
         # On history/queue, the fanart is obtained directly from the json
         fanart      = (media['series']['landscape_image']['fwide_url']
