@@ -33,7 +33,6 @@ import crunchy_json as crj
 from crunchy_json import log
 
 
-
 class Args(object):
     """Arguments class.
 
@@ -162,7 +161,7 @@ def add_item(args,
     # Add context menu
     s1  = re.sub(rex, 'add_to_queue',      u)
     s2  = re.sub(rex, 'remove_from_queue', u)
-    #s3  = re.sub(rex, 'list_media', u)
+    s3  = re.sub(rex, 'list_coll', u)
 
     cm = [(args._lang(30505), 'XBMC.Addon.OpenSettings(%s)' % args._id)]
 
@@ -189,7 +188,7 @@ def add_item(args,
             else:
                 cm.insert(1, (args._lang(30502), 'XBMC.RunPlugin(%s)' % s1))
 
-    #cm.insert(2, (args._lang(30503), 'XBMC.RunPlugin(%s)' % s3))
+    cm.insert(2, (args._lang(30503), 'XBMC.ActivateWindow(Videos,%s)' % s3))
     cm.append(('Toggle debug', 'XBMC.ToggleDebug'))
 
     li.addContextMenuItems(cm, replaceItems=True)
