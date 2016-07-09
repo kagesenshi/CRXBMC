@@ -69,24 +69,23 @@ def encode(f):
 
 def endofdirectory(sortMethod='none'):
     """Mark end of directory listing.
-	
-    
-    # Set sortmethod to something xbmc can use
-    if  args.user_data['video_sort'] == false:
-        sortMethod = xbmcplugin.SORT_METHOD_NONE
-    elif sortMethod == 'title':
-        sortMethod = xbmcplugin.SORT_METHOD_TITLE
-    elif sortMethod == 'none':
-        sortMethod = xbmcplugin.SORT_METHOD_NONE
-    elif sortMethod == 'date':
-        sortMethod = xbmcplugin.SORT_METHOD_DATE
-    elif sortMethod == 'label':
-        sortMethod = xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE
 	"""
 
     # Sort methods are required in library mode
-    xbmcplugin.addSortMethod(int(sys.argv[1]),
-                             xbmcplugin.SORT_METHOD_NONE)
+    # Set for Queue only, not for anything else
+    if sortMethod == 'user':
+       #Sort on "ordering" - ie, the order the items appeared
+       xbmcplugin.addSortMethod(int(sys.argv[1]),
+                                xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE)
+       #Title sort - as expected
+       xbmcplugin.addSortMethod(int(sys.argv[1]),
+                             xbmcplugin.SORT_METHOD_TITLE)
+       #Sort on percent played, ie - we are lying
+       xbmcplugin.addSortMethod(int(sys.argv[1]),
+                                xbmcplugin.SORT_METHOD_LASTPLAYED)
+    else:
+        xbmcplugin.addSortMethod(int(sys.argv[1]),
+                                 xbmcplugin.SORT_METHOD_NONE)
 
     # Let xbmc know the script is done adding items to the list
     dontAddToHierarchy = False
@@ -126,6 +125,8 @@ def add_item(args,
     info.setdefault('duration',     '0')
     info.setdefault('episode',      '0')
     info.setdefault('plot',         'None')
+    info.setdefault('percent',      '0')
+    info.setdefault('ordering',     '0')
 
     # Create params for xbmcplugin module
     u = sys.argv[0]    +\
@@ -151,11 +152,17 @@ def add_item(args,
     # Create list item
     li = xbmcgui.ListItem(label          = info['title'],
                           thumbnailImage = info['thumb'])
+    
     li.setInfo(type       = "Video",
                infoLabels = {"Title":   info['title'],
                              "Plot":    info['plot'],
                              "Year":    info['year'],
-							 "episode": info['episode']})
+                             "episode": info['episode'],
+                             "lastplayed": '2000-01-01 '+str(int(info['percent']) / 60).zfill(2)+':'+str(int(info['percent']) % 60).zfill(2)+':00',
+                             "sorttitle":  info['ordering']
+                            }
+              )
+
     li.setProperty("Fanart_Image", info['fanart_image'])
 
     # Add context menu

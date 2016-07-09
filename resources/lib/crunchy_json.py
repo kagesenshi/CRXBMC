@@ -519,7 +519,7 @@ def list_series(args):
                           'filterx':    args.filterx,
                           'offset':     offset})
 
-    crm.endofdirectory('label')
+    crm.endofdirectory('none')
 
 
 def list_categories(args):
@@ -632,7 +632,10 @@ def list_media_items(args, request, series_name, season, mode, fanart):
 
     """
     for media in request:
+        ordering = 0
 	
+        if (mode == "queue"):
+            ordering = media['ordering']
         if (mode == "history" or mode == "queue"):
             series_id = media['series']['series_id']
         elif args.series_id:
@@ -758,6 +761,8 @@ def list_media_items(args, request, series_name, season, mode, fanart):
             played   = args._lang(30401)
             porcentaje = (( int(float(playhead)) * 100 ) / int(float(duration)))+1
             visto = "[COLOR FFbc3bfd] " + played + " [/COLOR] [COLOR FF6fe335]" + str(porcentaje) + "%[/COLOR]"
+        else :
+            porcentaje = 0
             
         crm.add_item(args,
                      {'title':        name.encode("utf8") + visto,
@@ -771,11 +776,16 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                       'plot':         description,
                       'year':         year,
                       'playhead':     playhead,
-                      'duration':     duration},
+                      'duration':     duration,
+                      'percent':      porcentaje,
+                      'ordering':     ordering},
                      isFolder=False,
                      queued=queued)
 
-    crm.endofdirectory('none')
+    if mode == 'queue':
+       crm.endofdirectory('user')
+    else:
+       crm.endofdirectory('none')
 
 
 def history(args):
