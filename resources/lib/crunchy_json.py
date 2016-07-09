@@ -633,7 +633,7 @@ def list_media_items(args, request, series_name, season, mode, fanart):
     """
     for media in request:
 	
-        if mode == "history":
+        if (mode == "history" or mode == "queue"):
             series_id = media['series']['series_id']
         elif args.series_id:
             series_id = args.series_id
