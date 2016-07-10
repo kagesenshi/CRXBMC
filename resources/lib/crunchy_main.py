@@ -69,11 +69,11 @@ def encode(f):
 
 def endofdirectory(sortMethod='none'):
     """Mark end of directory listing.
-	"""
-
+    """
     # Sort methods are required in library mode
     # Set for Queue only, not for anything else
-    if sortMethod == 'user':
+    # Also check if sorting should be allowed
+    if (sortMethod == 'user') and (xbmcplugin.getSetting(int(sys.argv[1]),"sort_queue") == 'true'):
        #Sort on "ordering" - ie, the order the items appeared
        xbmcplugin.addSortMethod(int(sys.argv[1]),
                                 xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE)
