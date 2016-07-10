@@ -195,9 +195,10 @@ def add_item(args,
             else:
                 cm.insert(1, (args._lang(30502), 'XBMC.RunPlugin(%s)' % s1))
 
-    cm.insert(2, (args._lang(30503), 'XBMC.ActivateWindow(Videos,%s)' % s3))
+    if (args.mode is not None and
+        args.mode in 'history|queue'):
+        cm.insert(2, (args._lang(30503), 'XBMC.ActivateWindow(Videos,%s)' % s3))
     cm.append(('Toggle debug', 'XBMC.ToggleDebug'))
-
     li.addContextMenuItems(cm, replaceItems=True)
 
     # Add item to list
