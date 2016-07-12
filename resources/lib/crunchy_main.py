@@ -152,9 +152,11 @@ def add_item(args,
     # Create list item
     li = xbmcgui.ListItem(label          = info['title'],
                           thumbnailImage = info['thumb'])
-    
+
+    percentPlayed = " " if int(info['percent']) < 1 else " [COLOR FFbc3bfd] " + args._lang(30401) + " [/COLOR] [COLOR FF6fe335]" + str(info['percent']) + "%[/COLOR]"
+ 
     li.setInfo(type       = "Video",
-               infoLabels = {"Title":   info['title'],
+               infoLabels = {"Title":   info['title'] + percentPlayed,
                              "Plot":    info['plot'],
                              "Year":    info['year'],
                              "episode": info['episode'],
