@@ -1028,12 +1028,12 @@ def start_playback(args):
     quality     = res_quality[int(args._addon.getSetting("video_quality"))]
 
     fields = "".join(["media.episode_number,",
-                      "media.series_name,",
-                      "media.name,",
                       "media.playhead,",
-                      "media.description,",
                       "media.url,",
                       "media.stream_data"])
+    if not hasattr(args, 'icon'): fields = fields + ",media.screenshot_image,image.fwide_url,series.landscape_image"
+    if not hasattr(args, 'name'): fields = fields + ",media.name"
+    if not hasattr(args, 'series_name'): fields = fields + ",media.series_name"
 
     values = {'media_id': args.id,
               'fields':   fields}
@@ -1043,6 +1043,17 @@ def start_playback(args):
     if request['error']:
         log("CR: start_playback: Connection failed, aborting..")
         return
+
+    if not hasattr(args, 'icon'):
+         args.icon = request.get('data',{}).get('screenshot_image',{}).get('fwide_url','http://static.ak.crunchyroll.com/i/no_image_beta_full.jpg')
+    if not hasattr(args, 'episode'):
+         args.episode = request.get('data',{}).get('episode_number','0')
+    if not hasattr(args, 'series_name'):
+         args.series_name = request.get('data',{}).get('series_name','Unable to fetch series name')
+    if not hasattr(args, 'name'):
+         args.name = args.series_name + " Episode " + args.episode + " - " + request.get('data',{}).get('name','Unable to fetch name')
+    if not hasattr(args, 'season'):
+         args.season = '0'  # No idea how to fetch this info
 
     resumetime = str(request['data']['playhead'])
     
@@ -1071,9 +1082,9 @@ def start_playback(args):
             item = xbmcgui.ListItem(args.name, path=url)
             # TVShowTitle, Season, and Episode are used by the Trakt.tv add-on to determine what is being played
             item.setInfo(type="Video", infoLabels={"Title":       args.name,
-                                                   "TVShowTitle": request['data']['series_name'],
+                                                   "TVShowTitle": args.series_name,
                                                    "Season": args.season,
-                                                   "Episode": request['data']['episode_number'],
+                                                   "Episode": args.episode,
                                                    "playcount":   playcount})
             item.setThumbnailImage(args.icon)
             item.setProperty('TotalTime',  args.duration)

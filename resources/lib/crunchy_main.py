@@ -57,7 +57,6 @@ class Args(object):
         self.__dict__.update(kwargs)
 
 
-
 def encode(f):
     """Decorator for encoding strings.
 
