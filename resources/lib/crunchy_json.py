@@ -1105,7 +1105,7 @@ def start_playback(args):
             timeplayed = resumetime
 
             # Give the player time to start up
-            time.sleep(3)
+            time.sleep(3);
 
             s = "CR: startPlayback: player is playing == %d"
             log(s % player.isPlaying(), xbmc.LOGDEBUG)
@@ -1116,20 +1116,28 @@ def start_playback(args):
                 playback_resume = False
             else:
                 playback_resume = True
-                xbmc.Player().pause()
-                resmin = int(resumetime) / 60
-                ressec = int(resumetime) % 60
-                dialog = xbmcgui.Dialog()
-                if dialog.yesno("message", "Do you want to Resume Playback at "+str(int(resmin))+":"+str(ressec).zfill(2)+"?"):
-                    playback_resume = True
-                else:
+                autoresume = args._addon.getSetting("autoresume")
+                if autoresume == "auto":
+                    playback_resume = True # Redudant, but for sake of completeness
+                elif autoresume == "no":
                     resumetime = 0
-
+                else:
+                    xbmc.Player().pause()
+                    resmin = int(resumetime) / 60
+                    ressec = int(resumetime) % 60
+                    dialog = xbmcgui.Dialog()
+                    if dialog.yesno("message", "Do you want to Resume Playback at "+str(int(resmin))+":"+str(ressec).zfill(2)+"?"):
+                        playback_resume = True
+                    else:
+                        resumetime = 0
             try:
                 if playback_resume is True:
-                    player.seekTime(float(resumetime))
-                    xbmc.Player().pause()
+                    if not (autoresume == "auto"):
+                        player.seekTime(float(resumetime))
+                    if autoresume not in ("auto", "no"):
+                        xbmc.Player().pause()
 
+                #Inform Crunchyroll about time played
                 while playlist_position == playlist.getposition():
                     timeplayed = str(int(player.getTime()))
 

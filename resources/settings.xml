@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+  <category label="General">
     <setting id="crunchy_username" type="text" label="30001" default=""/>
     <setting id="crunchy_password" type="text" label="30002" option="hidden" default=""/>
     <setting type="sep" />
@@ -8,4 +9,8 @@
     <setting id="sort_queue" type="bool" label="30506" default="false" />
     <setting type="sep" />
     <setting id="change_language" type="select" lvalues="30300|30301|30302|30303|30304|30305|30306|30307|30308|30309|30313" label="30211" default="0" />
+  </category>
+  <category label="Behaviour">
+    <setting id="autoresume" type="labelenum" values="ask|auto|no" label="30311" default="ask" />
+  </category>
 </settings>
