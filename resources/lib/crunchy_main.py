@@ -328,7 +328,14 @@ def check_mode(args):
     """Run mode-specific functions.
 
     """
-    mode = args.mode
+    #For a very minimal request to play video
+    try:
+        mode = args.mode
+    except:
+        mode = (None
+                 if not hasattr(args,'id')
+                 else 'videoplay')
+
     log("CR: Main: argv[0] = %s" % sys.argv[0],     xbmc.LOGDEBUG)
     log("CR: Main: argv[1] = %s" % sys.argv[1],     xbmc.LOGDEBUG)
     log("CR: Main: argv[2] = %s" % sys.argv[2],     xbmc.LOGDEBUG)

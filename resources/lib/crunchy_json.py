@@ -1034,6 +1034,7 @@ def start_playback(args):
     if not hasattr(args, 'icon'): fields = fields + ",media.screenshot_image,image.fwide_url,series.landscape_image"
     if not hasattr(args, 'name'): fields = fields + ",media.name"
     if not hasattr(args, 'series_name'): fields = fields + ",media.series_name"
+    if not hasattr(args, 'duration'): fields = fields + ",media.duration"
 
     values = {'media_id': args.id,
               'fields':   fields}
@@ -1054,6 +1055,8 @@ def start_playback(args):
          args.name = args.series_name + " Episode " + args.episode + " - " + request.get('data',{}).get('name','Unable to fetch name')
     if not hasattr(args, 'season'):
          args.season = '0'  # No idea how to fetch this info
+    if not hasattr(args, 'duration'):
+         args.duration = str(request.get('data',{}).get('duration','0'))
 
     resumetime = str(request['data']['playhead'])
     
