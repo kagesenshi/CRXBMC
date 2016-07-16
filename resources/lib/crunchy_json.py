@@ -1091,6 +1091,11 @@ def start_playback(args):
                                                    "playcount":   playcount})
             item.setThumbnailImage(args.icon)
             item.setProperty('TotalTime',  args.duration)
+
+            autoresume = args._addon.getSetting("autoresume")
+            if (autoresume == "no") or (int(resumetime)<30):
+                resumetime = "0"
+               
             item.setProperty('ResumeTime', resumetime)
 
             log("CR: start_playback: url = %s" % url)
@@ -1105,37 +1110,26 @@ def start_playback(args):
             timeplayed = resumetime
 
             # Give the player time to start up
-            time.sleep(3);
+            time.sleep(3)
 
             s = "CR: startPlayback: player is playing == %d"
             log(s % player.isPlaying(), xbmc.LOGDEBUG)
 
             playlist_position = playlist.getposition()
 
-            if int(resumetime) <= 90:
-                playback_resume = False
-            else:
+            playback_resume = False
+            if (autoresume not in ("auto", "no")) and (int(resumetime)>0):
                 playback_resume = True
-                autoresume = args._addon.getSetting("autoresume")
-                if autoresume == "auto":
-                    playback_resume = True # Redudant, but for sake of completeness
-                elif autoresume == "no":
+                resmin = int(resumetime) / 60
+                ressec = int(resumetime) % 60
+                dialog = xbmcgui.Dialog()
+                if not dialog.yesno("message", "Do you want to Resume Playback at "+str(int(resmin))+":"+str(ressec).zfill(2)+"?"):
                     resumetime = 0
-                else:
-                    xbmc.Player().pause()
-                    resmin = int(resumetime) / 60
-                    ressec = int(resumetime) % 60
-                    dialog = xbmcgui.Dialog()
-                    if dialog.yesno("message", "Do you want to Resume Playback at "+str(int(resmin))+":"+str(ressec).zfill(2)+"?"):
-                        playback_resume = True
-                    else:
-                        resumetime = 0
+
             try:
                 if playback_resume is True:
-                    if not (autoresume == "auto"):
-                        player.seekTime(float(resumetime))
-                    if autoresume not in ("auto", "no"):
-                        xbmc.Player().pause()
+                    player.seekTime(float(resumetime))
+                    xbmc.Player().pause()
 
                 #Inform Crunchyroll about time played
                 while playlist_position == playlist.getposition():
