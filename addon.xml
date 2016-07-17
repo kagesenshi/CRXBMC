@@ -6,6 +6,7 @@
 	<extension point="xbmc.python.pluginsource" library="default.py">
 		<provides>video</provides>
 	</extension>
+	<extension point="xbmc.service" library="monitor.py" start="login" />
 	<extension point="xbmc.addon.metadata">
 		<platform>all</platform>
 		<language>en es no de fr ja</language>
