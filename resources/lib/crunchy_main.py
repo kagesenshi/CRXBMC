@@ -332,9 +332,15 @@ def check_mode(args):
     try:
         mode = args.mode
     except:
-        mode = (None
-                 if not hasattr(args,'id')
-                 else 'videoplay')
+        #Shorthand for play on id
+        if hasattr(args,'id'):
+           mode = 'videoplay'
+        #Shorthand for play on url
+        elif hasattr(args,'url'):
+           mode = 'videoplay'
+           args.id = re.sub(r'.*-', '', args.url)
+        else:
+           mode = None
 
     log("CR: Main: argv[0] = %s" % sys.argv[0],     xbmc.LOGDEBUG)
     log("CR: Main: argv[1] = %s" % sys.argv[1],     xbmc.LOGDEBUG)
