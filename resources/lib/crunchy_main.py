@@ -126,6 +126,8 @@ def add_item(args,
     info.setdefault('plot',         'None')
     info.setdefault('percent',      '0')
     info.setdefault('ordering',     '0')
+    if info['plot'] == None:
+        info['plot'] = "N/A" #We want a string
 
     # Create params for xbmcplugin module
     u = sys.argv[0]    +\
@@ -145,7 +147,7 @@ def add_item(args,
         '&year='       + urllib.quote_plus(info['year'])         +\
         '&playhead='   + urllib.quote_plus(info['playhead'])     +\
         '&duration='   + urllib.quote_plus(info['duration'])     +\
-        '&episode='   + urllib.quote_plus(info['episode'])     +\
+        '&episode='    + urllib.quote_plus(info['episode'])      +\
         '&plot='       + urllib.quote_plus(info['plot']          +'%20')
 
     # Create list item
@@ -288,6 +290,12 @@ def channels(args):
               'media_type': args.media_type,
               'filterx':    'season',
               'offset':     '0'})
+    add_item(args,
+             {'title':      'Random',
+              'mode':       'get_random',
+              'media_type': args.media_type,
+              'filterx':    'random',
+              'offset':     '0'})
     endofdirectory()
 
 
@@ -339,6 +347,7 @@ def check_mode(args):
         elif hasattr(args,'url'):
            mode = 'videoplay'
            args.id = re.sub(r'.*-', '', args.url)
+           args.id = re.sub(r'\?.*', '', args.id)
         else:
            mode = None
 
@@ -370,6 +379,8 @@ def check_mode(args):
         crj.remove_from_queue(args)
     elif mode == 'videoplay':
         crj.start_playback(args)
+    elif mode == 'get_random':
+        crj.get_random(args)
     else:
         fail(args)
 

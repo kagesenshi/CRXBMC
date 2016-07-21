@@ -542,7 +542,8 @@ def list_categories(args):
     crm.endofdirectory('none')
 
 
-def list_collections(args):
+def list_collections(args,
+                     random = False):
     """List collections.
 
     """
@@ -560,6 +561,25 @@ def list_collections(args):
     request = makeAPIRequest(args, 'list_collections', options)
 
     if request['error'] is False:
+        if random:
+            try:
+               random_media_type = str(args.media_type)
+            except:
+               random_media_type = 'anime'
+            try:
+               random_name = request['data'][0]['name']
+            except:
+               random_name = "[New random]"
+            random_li =  xbmcgui.ListItem(label = random_name)
+            random_li.setInfo(type       = "Video",
+                              infoLabels = {"Title": "[New random]"}
+                              )
+            xbmcplugin.addDirectoryItem(handle     = int(sys.argv[1]),
+#                                        url        = sys.argv[0] + "?mode=get_random&media_type=" + random_media_type,
+                                        url        = sys.argv[0],
+                                        listitem   = random_li,
+                                        isFolder   = True)
+
         if len(request['data']) <= 1:
             for collection in request['data']:
                 args.complete = '1' if collection['complete'] else '0'
@@ -1149,6 +1169,53 @@ def start_playback(args):
 
             log("CR: start_playback: Finished logging: %s" % url)
 
+
+def get_random(args):
+    """Fetch random show
+
+    """
+    media = 'anime'
+    if hasattr(args,'media_type'):
+        if (args.media_type == 'drama'):
+            media = 'drama'
+    print ("Media: " + media)
+
+    try:
+        url = urllib2.urlopen("http://www.crunchyroll.com/random/" + media).geturl()
+    except:
+        xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch random show",xbmcgui.NOTIFICATION_ERROR)
+        return "False"
+
+    #Strip out extras, like referrals
+    url = re.sub(r'\?.*', '', url)
+    #Strip down to getting the show id only
+    episode_id = re.sub(r'.*-', '', url)
+
+    if not (int(episode_id) > 0):
+        xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch episode id",xbmcgui.NOTIFICATION_ERROR)
+        return "False"
+
+    fields = "media.series_id,media.series_name"
+    values = {'media_id': episode_id,
+              'fields':   fields}
+
+    request = makeAPIRequest(args, 'info', values)
+    
+    #And try to list the show, just like 'goto series'
+    try:
+        args.series_id = request['data']['series_id']
+    except:
+        xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch random show id",xbmcgui.NOTIFICATION_ERROR)
+        return "False"
+    else:
+        xbmcgui.Dialog().notification("Loading",request['data']['series_name'])
+#        if not hasattr(args,'count'):
+#           args.count = 0
+#        if not hasattr(args,'name'):
+#           args.name = request['data']['series_name']
+        list_collections(args,True)
+
+   
 
 def pretty(d, indent=1):
     """Pretty printer for dictionaries.
