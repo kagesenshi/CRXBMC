@@ -575,8 +575,7 @@ def list_collections(args,
                               infoLabels = {"Title": "[New random]"}
                               )
             xbmcplugin.addDirectoryItem(handle     = int(sys.argv[1]),
-#                                        url        = sys.argv[0] + "?mode=get_random&media_type=" + random_media_type,
-                                        url        = sys.argv[0],
+                                        url        = crm.build_url(crm.set_info_defaults(args,{'mode': 'get_random','media_type': random_media_type, 'title': random_name})),
                                         listitem   = random_li,
                                         isFolder   = True)
 
@@ -1209,10 +1208,6 @@ def get_random(args):
         return "False"
     else:
         xbmcgui.Dialog().notification("Loading",request['data']['series_name'])
-#        if not hasattr(args,'count'):
-#           args.count = 0
-#        if not hasattr(args,'name'):
-#           args.name = request['data']['series_name']
         list_collections(args,True)
 
    

@@ -92,22 +92,13 @@ def endofdirectory(sortMethod='none'):
                               updateListing = dontAddToHierarchy)
 
 
-def add_item(args,
-             info,
-             isFolder=True,
-             total_items=0,
-             queued=False,
-             rex=re.compile(r'(?<=mode=)[^&]*')):
-    """Add item to directory listing.
-
-    """
+def set_info_defaults (args,info):
     # Defaults in dict. Use 'None' instead of None so it is compatible for
     # quote_plus in parseArgs.
     info.setdefault('url',          'None')
     info.setdefault('thumb',        'None')
     info.setdefault('fanart_image',
                     xbmc.translatePath(args._addon.getAddonInfo('fanart')))
-    info.setdefault('mode',         'None')
     info.setdefault('count',        '0')
     info.setdefault('filterx',      'None')
     info.setdefault('id',           'None')
@@ -126,11 +117,16 @@ def add_item(args,
     info.setdefault('plot',         'None')
     info.setdefault('percent',      '0')
     info.setdefault('ordering',     '0')
-    if info['plot'] == None:
-        info['plot'] = "N/A" #We want a string
+    #And set all None to 'None'
+    for key, value in info.items():
+        if value == None:
+            info[key] = 'None'
+    return info
 
+
+def build_url (info):
     # Create params for xbmcplugin module
-    u = sys.argv[0]    +\
+    s = sys.argv[0]    +\
         '?url='        + urllib.quote_plus(info['url'])          +\
         '&mode='       + urllib.quote_plus(info['mode'])         +\
         '&name='       + urllib.quote_plus(info['title'])        +\
@@ -149,6 +145,21 @@ def add_item(args,
         '&duration='   + urllib.quote_plus(info['duration'])     +\
         '&episode='    + urllib.quote_plus(info['episode'])      +\
         '&plot='       + urllib.quote_plus(info['plot']          +'%20')
+    return s
+
+
+def add_item(args,
+             info,
+             isFolder=True,
+             total_items=0,
+             queued=False,
+             rex=re.compile(r'(?<=mode=)[^&]*')):
+    """Add item to directory listing.
+
+    """
+    info = set_info_defaults(args,info)
+    u = build_url(info)
+
 
     # Create list item
     li = xbmcgui.ListItem(label          = info['title'],
