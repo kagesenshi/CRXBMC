@@ -572,10 +572,18 @@ def list_collections(args,
                random_name = "[New random]"
             random_li =  xbmcgui.ListItem(label = random_name)
             random_li.setInfo(type       = "Video",
-                              infoLabels = {"Title": "[New random]"}
-                              )
+                              infoLabels = {"Title": "[New random]"})
+
+            random_li.setArt({'fanart': xbmc.translatePath(args._addon.getAddonInfo('fanart')),
+                              'thumb':  xbmc.validatePath(xbmc.translatePath(args._addon.getAddonInfo('path') + "\dice.png"))
+                              })
+
             xbmcplugin.addDirectoryItem(handle     = int(sys.argv[1]),
-                                        url        = crm.build_url(crm.set_info_defaults(args,{'mode': 'get_random','media_type': random_media_type, 'title': random_name})),
+                                        url        = crm.build_url(crm.set_info_defaults(args,
+                                                         {'mode': 'get_random',
+                                                          'media_type': random_media_type,
+                                                          'title': random_name
+                                                         })),
                                         listitem   = random_li,
                                         isFolder   = True)
 
@@ -1207,7 +1215,7 @@ def get_random(args):
         xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch random show id",xbmcgui.NOTIFICATION_ERROR)
         return "False"
     else:
-        xbmcgui.Dialog().notification("Loading",request['data']['series_name'])
+        #And then list the series
         list_collections(args,True)
 
    
