@@ -519,7 +519,7 @@ def list_series(args):
                           'filterx':    args.filterx,
                           'offset':     offset})
 
-    crm.endofdirectory('label')
+    crm.endofdirectory('none')
 
 
 def list_categories(args):
@@ -542,7 +542,8 @@ def list_categories(args):
     crm.endofdirectory('none')
 
 
-def list_collections(args):
+def list_collections(args,
+                     random = False):
     """List collections.
 
     """
@@ -560,6 +561,32 @@ def list_collections(args):
     request = makeAPIRequest(args, 'list_collections', options)
 
     if request['error'] is False:
+        if random:
+            try:
+               random_media_type = str(args.media_type)
+            except:
+               random_media_type = 'anime'
+            try:
+               random_name = request['data'][0]['name']
+            except:
+               random_name = "[New random]"
+            random_li =  xbmcgui.ListItem(label = random_name)
+            random_li.setInfo(type       = "Video",
+                              infoLabels = {"Title": "[New random]"})
+
+            random_li.setArt({'fanart': xbmc.translatePath(args._addon.getAddonInfo('fanart')),
+                              'thumb':  xbmc.validatePath(xbmc.translatePath(args._addon.getAddonInfo('path') + "\dice.png"))
+                              })
+
+            xbmcplugin.addDirectoryItem(handle     = int(sys.argv[1]),
+                                        url        = crm.build_url(crm.set_info_defaults(args,
+                                                         {'mode': 'get_random',
+                                                          'media_type': random_media_type,
+                                                          'title': random_name
+                                                         })),
+                                        listitem   = random_li,
+                                        isFolder   = True)
+
         if len(request['data']) <= 1:
             for collection in request['data']:
                 args.complete = '1' if collection['complete'] else '0'
@@ -632,7 +659,10 @@ def list_media_items(args, request, series_name, season, mode, fanart):
 
     """
     for media in request:
+        ordering = 0
 	
+        if (mode == "queue"):
+            ordering = media['ordering']
         if (mode == "history" or mode == "queue"):
             series_id = media['series']['series_id']
         elif args.series_id:
@@ -753,14 +783,13 @@ def list_media_items(args, request, series_name, season, mode, fanart):
         url = media['url']
         media_id = url.split('-')[-1]
 
-        visto = " "
         if int(float(playhead)) > 10 :
-            played   = args._lang(30401)
-            porcentaje = (( int(float(playhead)) * 100 ) / int(float(duration)))+1
-            visto = "[COLOR FFbc3bfd] " + played + " [/COLOR] [COLOR FF6fe335]" + str(porcentaje) + "%[/COLOR]"
+            percent = (( int(float(playhead)) * 100 ) / int(float(duration)))+1
+        else :
+            percent = 0
             
         crm.add_item(args,
-                     {'title':        name.encode("utf8") + visto,
+                     {'title':        name.encode("utf8"),
                       'mode':         'videoplay',
                       'id':           media_id.encode("utf8"),
                       'series_id':    series_id,
@@ -771,11 +800,16 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                       'plot':         description,
                       'year':         year,
                       'playhead':     playhead,
-                      'duration':     duration},
+                      'duration':     duration,
+                      'percent':      percent,
+                      'ordering':     ordering},
                      isFolder=False,
                      queued=queued)
 
-    crm.endofdirectory('none')
+    if mode == 'queue':
+       crm.endofdirectory('user')
+    else:
+       crm.endofdirectory('none')
 
 
 def history(args):
@@ -1021,12 +1055,13 @@ def start_playback(args):
     quality     = res_quality[int(args._addon.getSetting("video_quality"))]
 
     fields = "".join(["media.episode_number,",
-                      "media.series_name,",
-                      "media.name,",
                       "media.playhead,",
-                      "media.description,",
                       "media.url,",
                       "media.stream_data"])
+    if not hasattr(args, 'icon'): fields = fields + ",media.screenshot_image,image.fwide_url,series.landscape_image"
+    if not hasattr(args, 'name'): fields = fields + ",media.name"
+    if not hasattr(args, 'series_name'): fields = fields + ",media.series_name"
+    if not hasattr(args, 'duration'): fields = fields + ",media.duration"
 
     values = {'media_id': args.id,
               'fields':   fields}
@@ -1036,6 +1071,19 @@ def start_playback(args):
     if request['error']:
         log("CR: start_playback: Connection failed, aborting..")
         return
+
+    if not hasattr(args, 'icon'):
+         args.icon = request.get('data',{}).get('screenshot_image',{}).get('fwide_url','http://static.ak.crunchyroll.com/i/no_image_beta_full.jpg')
+    if not hasattr(args, 'episode'):
+         args.episode = request.get('data',{}).get('episode_number','0')
+    if not hasattr(args, 'series_name'):
+         args.series_name = request.get('data',{}).get('series_name','Unable to fetch series name')
+    if not hasattr(args, 'name'):
+         args.name = args.series_name + " Episode " + args.episode + " - " + request.get('data',{}).get('name','Unable to fetch name')
+    if not hasattr(args, 'season'):
+         args.season = '0'  # No idea how to fetch this info
+    if not hasattr(args, 'duration'):
+         args.duration = str(request.get('data',{}).get('duration','0'))
 
     resumetime = str(request['data']['playhead'])
     
@@ -1064,12 +1112,17 @@ def start_playback(args):
             item = xbmcgui.ListItem(args.name, path=url)
             # TVShowTitle, Season, and Episode are used by the Trakt.tv add-on to determine what is being played
             item.setInfo(type="Video", infoLabels={"Title":       args.name,
-                                                   "TVShowTitle": request['data']['series_name'],
+                                                   "TVShowTitle": args.series_name,
                                                    "Season": args.season,
-                                                   "Episode": request['data']['episode_number'],
+                                                   "Episode": args.episode,
                                                    "playcount":   playcount})
             item.setThumbnailImage(args.icon)
             item.setProperty('TotalTime',  args.duration)
+
+            autoresume = args._addon.getSetting("autoresume")
+            if (autoresume == "no") or (int(resumetime)<30):
+                resumetime = "0"
+               
             item.setProperty('ResumeTime', resumetime)
 
             log("CR: start_playback: url = %s" % url)
@@ -1091,17 +1144,13 @@ def start_playback(args):
 
             playlist_position = playlist.getposition()
 
-            if int(resumetime) <= 90:
-                playback_resume = False
-            else:
+            playback_resume = False
+            if (autoresume not in ("auto", "no")) and (int(resumetime)>0):
                 playback_resume = True
-                xbmc.Player().pause()
                 resmin = int(resumetime) / 60
                 ressec = int(resumetime) % 60
                 dialog = xbmcgui.Dialog()
-                if dialog.yesno("message", "Do you want to Resume Playback at "+str(int(resmin))+":"+str(ressec).zfill(2)+"?"):
-                    playback_resume = True
-                else:
+                if not dialog.yesno("message", "Do you want to Resume Playback at "+str(int(resmin))+":"+str(ressec).zfill(2)+"?"):
                     resumetime = 0
 
             try:
@@ -1109,6 +1158,7 @@ def start_playback(args):
                     player.seekTime(float(resumetime))
                     xbmc.Player().pause()
 
+                #Inform Crunchyroll about time played
                 while playlist_position == playlist.getposition():
                     timeplayed = str(int(player.getTime()))
 
@@ -1126,6 +1176,49 @@ def start_playback(args):
 
             log("CR: start_playback: Finished logging: %s" % url)
 
+
+def get_random(args):
+    """Fetch random show
+
+    """
+    media = 'anime'
+    if hasattr(args,'media_type'):
+        if (args.media_type == 'drama'):
+            media = 'drama'
+    print ("Media: " + media)
+
+    try:
+        url = urllib2.urlopen("http://www.crunchyroll.com/random/" + media).geturl()
+    except:
+        xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch random show",xbmcgui.NOTIFICATION_ERROR)
+        return "False"
+
+    #Strip out extras, like referrals
+    url = re.sub(r'\?.*', '', url)
+    #Strip down to getting the show id only
+    episode_id = re.sub(r'.*-', '', url)
+
+    if not (int(episode_id) > 0):
+        xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch episode id",xbmcgui.NOTIFICATION_ERROR)
+        return "False"
+
+    fields = "media.series_id,media.series_name"
+    values = {'media_id': episode_id,
+              'fields':   fields}
+
+    request = makeAPIRequest(args, 'info', values)
+    
+    #And try to list the show, just like 'goto series'
+    try:
+        args.series_id = request['data']['series_id']
+    except:
+        xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch random show id",xbmcgui.NOTIFICATION_ERROR)
+        return "False"
+    else:
+        #And then list the series
+        list_collections(args,True)
+
+   
 
 def pretty(d, indent=1):
     """Pretty printer for dictionaries.
