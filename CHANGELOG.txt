@@ -1,4 +1,5 @@
 [B]2.2.2[/B]
+Added German, thanks MrKrabat
 Removed all sorting.  For Reals
 Can be enabled by uncommenting the sorting in crunchy_main.py
 [B]2.2.1[/B]
