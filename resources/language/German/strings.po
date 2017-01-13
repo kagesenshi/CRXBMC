@@ -202,3 +202,7 @@ msgstr "Add-on Einstellungen"
 msgctxt "#30506"
 msgid "Enable Video Sorting"
 msgstr "Aktiviere Video sortierung"
+
+msgctxt "#30507"
+msgid "Progress & Watch State"
+msgstr "Fortschritt & Gesehen Status"

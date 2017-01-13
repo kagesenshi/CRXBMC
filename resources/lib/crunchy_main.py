@@ -165,8 +165,13 @@ def add_item(args,
     li = xbmcgui.ListItem(label          = info['title'],
                           thumbnailImage = info['thumb'])
 
-    percentPlayed = " " if int(info['percent']) < 1 else " [COLOR FFbc3bfd] " + args._lang(30401) + " [/COLOR] [COLOR FF6fe335]" + str(info['percent']) + "%[/COLOR]"
- 
+    show_percent = args._addon.getSetting("show_percent")
+
+    if show_percent == "true":
+     percentPlayed = " " if int(info['percent']) < 1 else " [COLOR FFbc3bfd] " + args._lang(30401) + " [/COLOR] [COLOR FF6fe335]" + str(info['percent']) + "%[/COLOR]"
+    if show_percent == "false":
+	 percentPlayed = ""
+
     li.setInfo(type       = "Video",
                infoLabels = {"Title":   info['title'] + percentPlayed,
                              "Plot":    info['plot'],
