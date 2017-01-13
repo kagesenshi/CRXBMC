@@ -173,7 +173,8 @@ def add_item(args,
                              "Year":    info['year'],
                              "episode": info['episode'],
                              "lastplayed": '2000-01-01 '+str(int(info['percent']) / 60).zfill(2)+':'+str(int(info['percent']) % 60).zfill(2)+':00',
-                             "sorttitle":  info['ordering']
+                             "sorttitle":  info['ordering'],
+                             "playcount": int(info['percent'] >= 90 and not isFolder)
                             }
               )
 
