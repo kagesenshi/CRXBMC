@@ -202,3 +202,7 @@ msgstr ""
 msgctxt "#30506"
 msgid "Enable Video Sorting"
 msgstr ""
+
+msgctxt "#30507"
+msgid "Progress & Watch State"
+msgstr ""

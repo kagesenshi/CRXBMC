@@ -12,5 +12,6 @@
   </category>
   <category label="Behaviour">
     <setting id="autoresume" type="labelenum" values="ask|auto|no" label="30311" default="ask" />
+    <setting id="show_percent" type="bool" label="30507" default="true" />
   </category>
 </settings>
