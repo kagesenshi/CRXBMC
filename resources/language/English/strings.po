@@ -206,3 +206,11 @@ msgstr ""
 msgctxt "#30507"
 msgid "Progress & Watch State"
 msgstr ""
+
+msgctxt "#30508"
+msgid "General"
+msgstr ""
+
+msgctxt "#30509"
+msgid "Behaviour"
+msgstr ""
