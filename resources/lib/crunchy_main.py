@@ -96,7 +96,7 @@ def set_info_defaults (args,info):
     # Defaults in dict. Use 'None' instead of None so it is compatible for
     # quote_plus in parseArgs.
     info.setdefault('url',          'None')
-    info.setdefault('thumb',        'None')
+    info.setdefault('thumb',        "DefaultFolder.png")
     info.setdefault('fanart_image',
                     xbmc.translatePath(args._addon.getAddonInfo('fanart')))
     info.setdefault('count',        '0')
