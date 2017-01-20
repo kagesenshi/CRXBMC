@@ -736,9 +736,6 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                     if (mode == "history" or
                         mode == "queue")
                     else name)
-        name = ("* " + name
-                    if media['free_available'] is False
-                    else name)
         soon = ("Coming Soon - " + series_name
                 + " Episode " + str(media['episode_number'])
                     if mode == "queue"
