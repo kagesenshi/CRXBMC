@@ -214,3 +214,11 @@ msgstr ""
 msgctxt "#30509"
 msgid "Behaviour"
 msgstr ""
+
+msgctxt "#30510"
+msgid "Prefix 'Premium Content' as..."
+msgstr ""
+
+msgctxt "#30511"
+msgid "Prefix \'Coming Soon\' as..."
+msgstr ""

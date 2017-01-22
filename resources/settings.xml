@@ -13,5 +13,7 @@
   <category label="30509">
     <setting id="autoresume" type="labelenum" values="ask|auto|no" label="30311" default="ask" />
     <setting id="show_percent" type="bool" label="30507" default="true" />
+    <setting id="prefix_premium" type="text" label="30510" default="" />
+    <setting id="prefix_coming" type="text" label="30511" default="Coming Soon - " />
   </category>
 </settings>
