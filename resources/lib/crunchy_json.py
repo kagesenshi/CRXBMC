@@ -736,10 +736,13 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                     if (mode == "history" or
                         mode == "queue")
                     else name)
-        soon = ("Coming Soon - " + series_name
-                + " Episode " + str(media['episode_number'])
+        name = (args._addon.getSetting("prefix_premium") + name
+                    if media['free_available'] is False
+                    else name)
+        soon = (args._addon.getSetting("prefix_coming") + series_name
+                + "Episode " + str(media['episode_number'])
                     if mode == "queue"
-                    else "Coming Soon - Episode "
+                    else args._addon.getSetting("prefix_coming") + "Episode "
                         + str(media['episode_number']))
         # Set the name for upcoming episode
         name = soon if media['available'] is False else name
