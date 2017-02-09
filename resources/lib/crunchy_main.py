@@ -198,6 +198,7 @@ def add_item(args,
         cm.insert(0, (args._lang(30504), 'XBMC.Action(Queue)'))
 
     if not isFolder:
+        li.addStreamInfo('video', {"duration": info['duration']})
         # Let XBMC know this can be played, unlike a folder
         li.setProperty('IsPlayable', 'true')
 
