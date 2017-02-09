@@ -43,6 +43,10 @@ msgctxt "#30008"
 msgid "1080p (HD)"
 msgstr ""
 
+msgctxt "#30012"
+msgid "Adaptive (beta)"
+msgstr ""
+
 msgctxt "#30009"
 msgid "Episodes"
 msgstr ""

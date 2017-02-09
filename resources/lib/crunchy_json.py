@@ -1051,7 +1051,7 @@ def start_playback(args):
     """Play video stream with selected quality.
 
     """
-    res_quality = ['low', 'mid', 'high', 'ultra']
+    res_quality = ['low', 'mid', 'high', 'ultra', 'adaptive']
     quality     = res_quality[int(args._addon.getSetting("video_quality"))]
 
     fields = "".join(["media.episode_number,",
@@ -1100,14 +1100,16 @@ def start_playback(args):
             for stream in request['data']['stream_data']['streams']:
                 allurl[stream['quality']] = stream['url']
 
-            if allurl[quality] is not None:
+            if quality in allurl:
                 url = allurl[quality]
-            elif quality == 'ultra' and allurl['high'] is not None:
+            elif quality == 'ultra' and 'high' in allurl:
                 url = allurl['high']
-            elif allurl['mid'] is not None:
+            elif 'mid' in allurl:
                 url = allurl['mid']
-            else:
+            elif 'low' in allurl:
                 url = allurl['low']
+            else:
+                url = allurl['adaptive']
 
             item = xbmcgui.ListItem(args.name, path=url)
             # TVShowTitle, Season, and Episode are used by the Trakt.tv add-on to determine what is being played
