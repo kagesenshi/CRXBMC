@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #Crunchyroll Login Info
@@ -44,7 +44,7 @@ msgid "1080p (HD)"
 msgstr "1080p (HD)"
 
 msgctxt "#30012"
-msgid "Adaptiv (beta)"
+msgid "Adaptiv (Beta)"
 msgstr ""
 
 msgctxt "#30009"
@@ -120,12 +120,8 @@ msgid "Video restricted"
 msgstr "Video ist Regionsbeschränkt"
 
 msgctxt "#30211"
-msgid "Force Language Change"
-msgstr "Erzwinge Sprachwechsel"
-
-msgctxt "#30300"
-msgid "Default"
-msgstr "Deaktiviert"
+msgid "Subtitle Language"
+msgstr "Untertitelsprache"
 
 msgctxt "#30301"
 msgid "English (US)"
@@ -133,7 +129,7 @@ msgstr "Englisch (US)"
 
 msgctxt "#30302"
 msgid "English (UK)"
-msgstr "Englissh (UK)"
+msgstr "Englisch (UK)"
 
 msgctxt "#30303"
 msgid "Nihongo"
@@ -162,10 +158,6 @@ msgstr "Spanisch (Lateinamerika)"
 msgctxt "#30309"
 msgid "Espanol (Espana)"
 msgstr "Spanisch (Spanien)"
-
-msgctxt "#30310"
-msgid "Done. Force language change is now disabled."
-msgstr "Fertig. Erzwungener Sprachwechsel ist jetzt deaktiviert."
 
 msgctxt "#30311"
 msgid "Resume Video Playback"
@@ -218,3 +210,11 @@ msgstr "Allgemein"
 msgctxt "#30509"
 msgid "Behaviour"
 msgstr "Verhalten"
+
+msgctxt "#30510"
+msgid "Prefix 'Premium Content' as..."
+msgstr "Prefix für 'Premium Inhalt'"
+
+msgctxt "#30511"
+msgid "Prefix \'Coming Soon\' as..."
+msgstr "Prefix für 'Demnächst verfügbar'"

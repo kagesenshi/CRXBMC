@@ -62,7 +62,7 @@ def load_pickle(args):
     """
     notice_msg = args._lang(30200)
 
-    change_language = args._addon.getSetting("change_language")
+    subtitle_language = args._addon.getSetting("subtitle_language")
 
     base_path = xbmc.translatePath(args._addon.getAddonInfo('profile')).decode('utf-8')
 
@@ -85,27 +85,25 @@ def load_pickle(args):
     try:
         # Load persistent vars
 
-        if change_language == "0":
-            user_data.setdefault('API_LOCALE',"enUS")
-        elif change_language == "1":
+        if subtitle_language == "0":
             user_data['API_LOCALE']  = "enUS"
-        elif change_language == "2":
+        elif subtitle_language == "1":
             user_data['API_LOCALE']  = "enGB"
-        elif change_language == "3":
+        elif subtitle_language == "2":
             user_data['API_LOCALE']  = "jaJP"
-        elif change_language == "4":
+        elif subtitle_language == "3":
             user_data['API_LOCALE']  = "frFR"
-        elif change_language == "5":
+        elif subtitle_language == "4":
             user_data['API_LOCALE']  = "deDE"
-        elif change_language == "6":
+        elif subtitle_language == "5":
             user_data['API_LOCALE']  = "ptBR"
-        elif change_language == "7":
+        elif subtitle_language == "6":
             user_data['API_LOCALE']  = "ptPT"
-        elif change_language == "8":
+        elif subtitle_language == "7":
             user_data['API_LOCALE']  = "esLA"
-        elif change_language == "9":
+        elif subtitle_language == "8":
             user_data['API_LOCALE']  = "esES"
-        elif change_language == "10":
+        elif subtitle_language == "9":
             user_data['API_LOCALE']  = "itIT"
 
         user_data['username'] = args._addon.getSetting("crunchy_username")
@@ -1318,70 +1316,6 @@ def makeAPIRequest(args, method, options):
         log("CR: makeAPIRequest: %s %s" % (s, pt), xbmc.LOGERROR)
 
     return request
-
-
-def change_locale(args):
-    """Change locale.
-
-    """
-    cj           = cookielib.LWPCookieJar()
-
-    notice      = args._lang(30200)
-    notice_msg  = args._lang(30211)
-    notice_err  = args._lang(30206)
-    notice_done = args._lang(30310)
-
-    icon = xbmc.translatePath(args._addon.getAddonInfo('icon'))
-
-    ua = 'Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0'
-
-    if (args.user_data['username'] != '' and
-        args.user_data['password'] != ''):
-
-        log("CR: Attempting to log-in with your user account...")
-        xbmc.executebuiltin('Notification(' + notice + ','
-                            + notice_msg + ',5000,' + icon + ')')
-
-        url  = 'https://www.crunchyroll.com/?a=formhandler'
-        data = urllib.urlencode({'formname': 'RpcApiUser_Login',
-                                 'next_url': '',
-                                 'fail_url': '/login',
-                                 'name':     args.user_data['username'],
-                                 'password': args.user_data['password']})
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        opener.addheaders = [('Referer',    'https://www.crunchyroll.com'),
-                             ('User-Agent', ua)]
-        urllib2.install_opener(opener)
-        req = opener.open(url, data)
-        req.close()
-
-    else:
-        xbmc.executebuiltin('Notification(' + notice + ','
-                            + notice_err + ',5000,' + icon + ')')
-        log("CR: No Crunchyroll account found!")
-
-    url  = 'https://www.crunchyroll.com/?a=formhandler'
-    data = urllib.urlencode({'next_url': '',
-                             'language': args.user_data['API_LOCALE'],
-                             'formname': 'RpcApiUser_UpdateDefaultSoftSubLanguage'})
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    opener.addheaders = [('Referer',    'https://www.crunchyroll.com/acct/?action=video'),
-                         ('User-Agent', ua)]
-    urllib2.install_opener(opener)
-
-    # Enter in the video settings page first (doesn't work without it)
-    req = opener.open("https://www.crunchyroll.com/acct/?action=video")
-
-    # Now do the actual language change
-    req = opener.open(url, data)
-    req.close()
-
-    log('CR: Now using ' + args.user_data['API_LOCALE'])
-    xbmc.executebuiltin('Notification(' + notice + ','
-                        + notice_done + ',5000,' + icon + ')')
-    log("CR: Disabling the force change language setting")
-
-    args._addon.setSetting(id="change_language", value="0")
 
 
 def log(msg,
