@@ -115,6 +115,10 @@ msgctxt "#30212"
 msgid "Video restricted"
 msgstr "De video is regionaal geblokkeerd"
 
+msgctxt "#30211"
+msgid "Subtitle Language"
+msgstr "Ondertitelingstaal"
+
 msgctxt "#30301"
 msgid "English (US)"
 msgstr "Engels (US)"
