@@ -1263,9 +1263,9 @@ def makeAPIRequest(args, method, options):
         values.update(options)
         options = urllib.urlencode(values)
         
-        try:
+        if sys.version_info >= (2, 7, 9):
             handler = urllib2.HTTPSHandler()
-        except AttributeError:
+        else:
             handler = urllib2_ssl.HTTPSHandler(ca_certs=path)
 
         opener = urllib2.build_opener(handler)
