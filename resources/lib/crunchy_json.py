@@ -770,7 +770,7 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                         else str(media['duration']))
         # Current playback point
         playhead = ("0"
-                        if media['available'] is False
+                        if (media['available'] is False or not 'playhead' in media)
                         else str(media['playhead']))
 
         # Adding published date instead
