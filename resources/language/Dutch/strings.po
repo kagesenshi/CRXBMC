@@ -116,12 +116,8 @@ msgid "Video restricted"
 msgstr "De video is regionaal geblokkeerd"
 
 msgctxt "#30211"
-msgid "Force Language Change"
-msgstr "Forceer taal verandering"
-
-msgctxt "#30300"
-msgid "Default"
-msgstr "Uitgeschakeld"
+msgid "Subtitle Language"
+msgstr "Ondertitelingstaal"
 
 msgctxt "#30301"
 msgid "English (US)"
@@ -158,10 +154,6 @@ msgstr "Spaans (Latijns Amerika)"
 msgctxt "#30309"
 msgid "Espanol (Espana)"
 msgstr "Spaans (Spanje)"
-
-msgctxt "#30310"
-msgid "Done. Force language change is now disabled."
-msgstr "Klaar. De geforceerde taal verandering is nu uitgeschakeld."
 
 msgctxt "#30311"
 msgid "Resume Video Playback"

@@ -234,11 +234,6 @@ def show_main(args):
     """Show main menu.
 
     """
-    change_language = args._addon.getSetting("change_language")
-
-    if change_language != "0":
-        crj.change_locale(args)
-
     anime   = args._lang(30100)
     drama   = args._lang(30104)
     queue   = args._lang(30105)

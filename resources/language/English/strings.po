@@ -120,12 +120,8 @@ msgid "Video restricted"
 msgstr ""
 
 msgctxt "#30211"
-msgid "Force Language Change"
+msgid "Subtitle Language"
 msgstr ""
-
-msgctxt "#30300"
-msgid "Default"
-msgstr "Disabled"
 
 msgctxt "#30301"
 msgid "English (US)"
@@ -161,10 +157,6 @@ msgstr ""
 
 msgctxt "#30309"
 msgid "Espanol (Espana)"
-msgstr ""
-
-msgctxt "#30310"
-msgid "Done. Force language change is now disabled."
 msgstr ""
 
 msgctxt "#30311"
