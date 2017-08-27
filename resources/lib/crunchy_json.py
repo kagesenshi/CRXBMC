@@ -1106,6 +1106,10 @@ def start_playback(args):
                 url = allurl['mid']
             elif 'low' in allurl:
                 url = allurl['low']
+            elif not allurl:
+                xbmcgui.Dialog().notification("Crunchyroll", "Sorry, this video is not available yet.", xbmcgui.NOTIFICATION_INFO)
+                log("CR: start_playback: this video is not available yet..")
+                return
             else:
                 url = allurl['adaptive']
 
