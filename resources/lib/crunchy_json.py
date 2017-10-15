@@ -1098,6 +1098,7 @@ def start_playback(args):
             for stream in request['data']['stream_data']['streams']:
                 allurl[stream['quality']] = stream['url']
 
+            log("CR: start_playback: streams found: " + str(allurl), xbmc.LOGDEBUG)
             if quality in allurl:
                 url = allurl[quality]
             elif quality == 'ultra' and 'high' in allurl:
@@ -1106,8 +1107,13 @@ def start_playback(args):
                 url = allurl['mid']
             elif 'low' in allurl:
                 url = allurl['low']
-            else:
+            elif 'adaptive' in allurl:
                 url = allurl['adaptive']
+            else:
+				# none of the above qualities found
+                xbmcgui.Dialog().notification("Crunchyroll", "Sorry, this video is not available yet.", xbmcgui.NOTIFICATION_INFO)
+                log("CR: start_playback: this video is not available yet..")
+                return
 
             item = xbmcgui.ListItem(args.name, path=url)
             # TVShowTitle, Season, and Episode are used by the Trakt.tv add-on to determine what is being played
