@@ -738,7 +738,7 @@ def list_media_items(args, request, series_name, season, mode, fanart):
                     if media['free_available'] is False
                     else name)
         soon = (args._addon.getSetting("prefix_coming") + series_name
-                + "Episode " + str(media['episode_number'])
+                + " Episode " + str(media['episode_number'])
                     if mode == "queue"
                     else args._addon.getSetting("prefix_coming") + "Episode "
                         + str(media['episode_number']))
@@ -781,8 +781,8 @@ def list_media_items(args, request, series_name, season, mode, fanart):
         url = media['url']
         media_id = url.split('-')[-1]
 
-        if int(float(playhead)) > 10 :
-            percent = (( int(float(playhead)) * 100 ) / int(float(duration)))+1
+        if (int(playhead) > 10) and (int(duration) > 0) :
+            percent = int(round(float(playhead) / float(duration) * 100))
         else :
             percent = 0
             
