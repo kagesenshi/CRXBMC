@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-  <category label="30508">
+  <category label="30508"> <!-- General -->
     <setting id="crunchy_username" type="text" label="30001" default=""/>
     <setting id="crunchy_password" type="text" label="30002" option="hidden" default=""/>
     <setting type="sep" />
@@ -10,10 +10,23 @@
     <setting type="sep" />
     <setting id="subtitle_language" type="select" lvalues="30301|30302|30303|30304|30305|30306|30307|30308|30309|30313" label="30211" default="0" />
   </category>
-  <category label="30509">
-    <setting id="autoresume" type="labelenum" values="ask|auto|no" label="30311" default="ask" />
+  <category label="30509"> <!-- Behaviour -->
+    <setting id="autoresume" type="enum" lvalues="30600|30601|30602" label="30311" default="2" /> <!-- no|yes|ask default=ask -->
     <setting id="show_percent" type="bool" label="30507" default="true" />
     <setting id="prefix_premium" type="text" label="30510" default="" />
     <setting id="prefix_coming" type="text" label="30511" default="Coming Soon - " />
   </category>
+  <category label="30515"> <!-- Context menu -->
+    <setting id="CM_kodi" type="bool" label="30519" default="false" />
+    <setting id="CM_queueV" type="bool" label="30504" default="true" /> 
+    <setting id="CM_playAt" type="select" lvalues="30604|30004|30005|30006|30008|30012" label="30520" default="0" /> <!-- keep order same as video_quality (above), prefix with off (30604) -->
+    <setting id="CM_playFrom" type="bool" label="30521" default="false" />
+    <setting id="CM_enqueueS" type="bool" label="30502" default="true" />
+    <setting id="CM_dequeueS" type="bool" label="30501" default="true" />
+    <setting id="CM_watched" type="bool" label="30513" default="false" />
+    <setting id="CM_unwatched" type="bool" label="30514" default="false" />
+    <setting id="CM_gotoS" type="bool" label="30503" default="true" />
+    <setting id="CM_settings" type="bool" label="30505" default="true" />
+    <setting id="CM_toggledebug" type="bool" label="30512" default="true" />
+  </category> 
 </settings>
