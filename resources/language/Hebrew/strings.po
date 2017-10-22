@@ -1,0 +1,220 @@
+# XBMC Media Center language file
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC-Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"POT-Creation-Date: 2013-07-17 09:48+0000\n"
+"PO-Revision-Date: 2017-10-19 14:32+0300\n"
+"Last-Translator: A. Dambledore\n"
+"Language-Team: Eng2Heb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+
+# Crunchyroll Login Info
+msgctxt "#30001"
+msgid "Username"
+msgstr "שם משתמש"
+
+msgctxt "#30002"
+msgid "Password"
+msgstr "סיסמה"
+
+msgctxt "#30003"
+msgid "Video quality:"
+msgstr "איכות וידאו:"
+
+msgctxt "#30004"
+msgid "360p (SD)"
+msgstr "360p (SD)"
+
+msgctxt "#30005"
+msgid "480p"
+msgstr "480p"
+
+msgctxt "#30006"
+msgid "720p (HD)"
+msgstr "720p (HD)"
+
+msgctxt "#30008"
+msgid "1080p (HD)"
+msgstr "1080p (HD)"
+
+msgctxt "#30012"
+msgid "Adaptive (beta)"
+msgstr "סתגלתנות (בטא)"
+
+msgctxt "#30009"
+msgid "Episodes"
+msgstr "פרקים"
+
+msgctxt "#30010"
+msgid "Series"
+msgstr "סדרות"
+
+msgctxt "#30011"
+msgid "Queue Type"
+msgstr "סוג תור"
+
+msgctxt "#30100"
+msgid "Anime"
+msgstr "אנימה"
+
+msgctxt "#30102"
+msgid "Updated"
+msgstr "עודכן"
+
+msgctxt "#30103"
+msgid "Popular"
+msgstr "פופולרי"
+
+msgctxt "#30104"
+msgid "Drama"
+msgstr "דרמה"
+
+msgctxt "#30105"
+msgid "Queue"
+msgstr "הוספה לתור"
+
+msgctxt "#30106"
+msgid "Simulcasts"
+msgstr "שידור בו-זמני"
+
+msgctxt "#30107"
+msgid "Genres"
+msgstr "סגנונות"
+
+msgctxt "#30110"
+msgid "Seasons"
+msgstr "עונות השנה"
+
+msgctxt "#30111"
+msgid "History"
+msgstr "היסטוריה"
+
+msgctxt "#30112"
+msgid "Alphabetical"
+msgstr "אלפבתית"
+
+msgctxt "#30200"
+msgid "Notice"
+msgstr "שים לב"
+
+msgctxt "#30203"
+msgid "No user account found"
+msgstr "לא נמצא חשבון משתמש"
+
+msgctxt "#30206"
+msgid "Login Failed: Please check Username and Password"
+msgstr "הכניסה נכשלה: בדוק את שם המשתמש והסיסמה"
+
+msgctxt "#30207"
+msgid "Internal Plugin Error: Please Report This Bug!"
+msgstr "שגיאה פנימית של התוסף: דווח על באג זה!"
+
+msgctxt "#30212"
+msgid "Video restricted"
+msgstr "הוידאו מוגבל"
+
+msgctxt "#30211"
+msgid "Subtitle Language"
+msgstr "שפת הכתוביות"
+
+msgctxt "#30301"
+msgid "English (US)"
+msgstr "אנגלית (ארהב)"
+
+msgctxt "#30302"
+msgid "English (UK)"
+msgstr "אנגלית (בריטניה)"
+
+msgctxt "#30303"
+msgid "Nihongo"
+msgstr "יפנית (ניב)"
+
+msgctxt "#30304"
+msgid "Francais (France)"
+msgstr "צרפתית (צרפת)"
+
+msgctxt "#30305"
+msgid "Deutsch"
+msgstr "גרמנית"
+
+msgctxt "#30306"
+msgid "Portugues (Brasil)"
+msgstr "פורטוגזית (ברזיל)"
+
+msgctxt "#30307"
+msgid "Portugues (Portugal)"
+msgstr "פורטוגזית (פורטוגל)"
+
+msgctxt "#30308"
+msgid "Espanol (LATAM)"
+msgstr "ספרדית (LATAM)"
+
+msgctxt "#30309"
+msgid "Espanol (Espana)"
+msgstr "ספרדית (ספרד)"
+
+msgctxt "#30311"
+msgid "Resume Video Playback"
+msgstr "חדש צפייה"
+
+msgctxt "#30312"
+msgid "You MUST be a Premium Member to use this plugin."
+msgstr "עליך להיות חבר פרמיום כדי להשתמש בהרחבה הזו."
+
+msgctxt "#30401"
+msgid "[Played]"
+msgstr "[נוגן]"
+
+msgctxt "#30313"
+msgid "Italian (Italian)"
+msgstr "איטלקית (איטליה)"
+
+msgctxt "#30501"
+msgid "Dequeue Series"
+msgstr "הוצא סדרות מהתור"
+
+msgctxt "#30502"
+msgid "Enqueue Series"
+msgstr "הכנס סדרות לתור"
+
+msgctxt "#30503"
+msgid "Goto Series"
+msgstr "עבור לסדרות"
+
+msgctxt "#30504"
+msgid "Queue Video"
+msgstr "ווידאו בתור"
+
+msgctxt "#30505"
+msgid "Add-on settings"
+msgstr "הגדרות הרחבה"
+
+msgctxt "#30506"
+msgid "Enable Video Sorting"
+msgstr "אפשר מיון וידאו"
+
+msgctxt "#30507"
+msgid "Progress & Watch State"
+msgstr "מצב התקדמות וצפייה"
+
+msgctxt "#30508"
+msgid "General"
+msgstr "כללי"
+
+msgctxt "#30509"
+msgid "Behaviour"
+msgstr "התנהגות"
+
+msgctxt "#30510"
+msgid "Prefix 'Premium Content' as..."
+msgstr "קידומת 'Premium Content' (תוכן פרימיום) כ ..."
+
+msgctxt "#30511"
+msgid "Prefix 'Coming Soon' as..."
+msgstr "קידומת 'Coming Soon' (בקרוב) כ ..."
