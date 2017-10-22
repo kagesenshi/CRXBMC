@@ -1099,7 +1099,9 @@ def start_playback(args):
                 allurl[stream['quality']] = stream['url']
 
             log("CR: start_playback: streams found: " + str(allurl), xbmc.LOGDEBUG)
+            is_adaptive = False
             if quality in allurl:
+                is_adaptive = quality == 'adaptive'
                 url = allurl[quality]
             elif quality == 'ultra' and 'high' in allurl:
                 url = allurl['high']
@@ -1108,6 +1110,7 @@ def start_playback(args):
             elif 'low' in allurl:
                 url = allurl['low']
             elif 'adaptive' in allurl:
+                is_adaptive = True
                 url = allurl['adaptive']
             else:
 				# none of the above qualities found
@@ -1130,6 +1133,11 @@ def start_playback(args):
                 resumetime = "0"
                
             item.setProperty('ResumeTime', resumetime)
+            
+            # Let inputstream.adpative handle adatpive playback
+            if is_adaptive:
+                item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+                item.setProperty('inputstream.adaptive.manifest_type', 'hls')
 
             log("CR: start_playback: url = %s" % url)
             player = xbmc.Player()
