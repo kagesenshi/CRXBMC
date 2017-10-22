@@ -1050,7 +1050,10 @@ def start_playback(args):
 
     """
     res_quality = ['low', 'mid', 'high', 'ultra', 'adaptive']
-    quality     = res_quality[int(args._addon.getSetting("video_quality"))]
+    if not hasattr(args, 'quality'): #Normal playback
+        quality     = res_quality[int(args._addon.getSetting("video_quality"))]
+    else: #One-off at different quality
+        quality     = res_quality[int(args.quality)]
 
     fields = "".join(["media.episode_number,",
                       "media.playhead,",
@@ -1125,7 +1128,7 @@ def start_playback(args):
             item.setThumbnailImage(args.icon)
             item.setProperty('TotalTime',  args.duration)
 
-            autoresume = args._addon.getSetting("autoresume")
+            autoresume = ["no","yes","ask"][int(args._addon.getSetting("autoresume"))]
             if (autoresume == "no") or (int(resumetime)<30):
                 resumetime = "0"
                
@@ -1133,6 +1136,12 @@ def start_playback(args):
 
             log("CR: start_playback: url = %s" % url)
             player = xbmc.Player()
+
+            if hasattr(args, 'resumetime'): #Override requested, "playFrom"
+                resumetime=args.resumetime
+                autoresume = "yes"          #It is an autoresume
+#            item.setProperty('StartOffset', str(float(resumetime)))
+            item.setProperty('ResumeTime', str(int(resumetime)))
 
             xbmcplugin.setResolvedUrl(int(sys.argv[1]),
                                       succeeded=True,
@@ -1151,7 +1160,7 @@ def start_playback(args):
             playlist_position = playlist.getposition()
 
             playback_resume = False
-            if (autoresume not in ("auto", "no")) and (int(resumetime)>0):
+            if (autoresume not in ("yes", "no")) and (int(resumetime)>0):
                 playback_resume = True
                 resmin = int(resumetime) / 60
                 ressec = int(resumetime) % 60
@@ -1168,11 +1177,7 @@ def start_playback(args):
                 while playlist_position == playlist.getposition():
                     timeplayed = str(int(player.getTime()))
 
-                    values = {'event':      'playback_status',
-                              'media_id':   args.id,
-                              'playhead':   timeplayed}
-
-                    request = makeAPIRequest(args, 'log', values)
+                    set_progress(args,timeplayed) #Report time
 
                     # Use video timeline here
                     xbmc.sleep(5000)
@@ -1181,6 +1186,19 @@ def start_playback(args):
                 log("CR: start_playback: Player stopped playing: %r" % e)
 
             log("CR: start_playback: Finished logging: %s" % url)
+
+
+def set_progress (args,
+                  time = -1):
+    """Report to server where we are
+
+    """
+    if int(time) >= 0:
+        values = {'event':      'playback_status',
+                  'media_id':   args.id,
+                  'playhead':   str(time)}
+
+        request = makeAPIRequest(args, 'log', values)
 
 
 def get_random(args):

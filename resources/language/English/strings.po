@@ -218,3 +218,59 @@ msgstr ""
 msgctxt "#30511"
 msgid "Prefix \'Coming Soon\' as..."
 msgstr ""
+
+msgctxt "#30512"
+msgid "Toggle Debug"
+msgstr ""
+
+msgctxt "#30513"
+msgid "Set to 100% played"
+msgstr ""
+
+msgctxt "#30514"
+msgid "Set to 0% played"
+msgstr ""
+
+msgctxt "#30515"
+msgid "Context Menu"
+msgstr ""
+
+msgctxt "#30519"
+msgid "Kodi default menu"
+msgstr ""
+
+msgctxt "#30520"
+#Will have a quality appended to it, "Play at" will be shown like "Play at 480p"
+msgid "Play at"
+msgstr ""
+
+msgctxt "#30521"
+#Will have a timestamp applied to it, "Play at" will be shown like "Play from 00:12:25"
+msgid "Play from"
+msgstr ""
+
+msgctxt "#30600"
+#Negative answer
+msgid "No"
+msgstr ""
+
+msgctxt "#30601"
+#Affirmative answer
+msgid "Yes"
+msgstr ""
+
+msgctxt "#30602"
+#Indicate that the add-on should ask
+msgid "Ask"
+msgstr ""
+
+msgctxt "#30603"
+#On / Activated (opposite of "off")
+msgid "On"
+msgstr ""
+
+msgctxt "#30604"
+#Off / Not activated (opposite of "on")
+msgid "Off"
+msgstr ""
+
