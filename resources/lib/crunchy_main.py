@@ -249,6 +249,9 @@ def add_item(args,
     if boolSetting("CM_toggledebug"):
         cm.append((args._lang(30512), 'XBMC.ToggleDebug')) #Toggle Debug
 
+    if (mode in 'bad_login'):
+        u = "%s?mode=%s" % (sys.argv[0],mode)
+
     li.addContextMenuItems(cm, replaceItems=(not boolSetting("CM_kodi"))) #Whether to use kodi menu items or not 
 
     # Add item to list
@@ -257,6 +260,13 @@ def add_item(args,
                                 listitem   = li,
                                 isFolder   = isFolder,
                                 totalItems = total_items)
+
+
+def bad_login(args):
+    """Prompt addon settings
+
+    """
+    args._addon.openSettings(args._id) #Add-on settings
 
 
 def show_main(args):
@@ -425,6 +435,8 @@ def check_mode(args):
         crj.get_random(args)
     elif mode == 'set_progress':
         crj.set_progress(args,args.time)
+    elif mode == 'bad_login':
+        bad_login(args)
     else:
         fail(args)
 
@@ -435,12 +447,25 @@ def main():
     """
     args = parse_args()
 
-    if crj.load_pickle(args) is False:
-        add_item(args,
-                {'title': 'Session failed: Check login'})
-        endofdirectory()
+    if (hasattr(args,'mode')) and (args.mode == 'bad_login'):
+        bad_login(args)
+        args = parse_args()
+        args.mode = None
 
-    else:
+    logged_in = True
+    if crj.load_pickle(args) is False:
+        base_path = xbmc.translatePath(args._addon.getAddonInfo('profile')).decode('utf-8')
+        pickle_path = os.path.join(base_path, "cruchyPickle")
+        if os.path.exists(pickle_path): #silently remove crunchyPickle and try again
+            os.remove(pickle_path)
+        if crj.load_pickle(args) is False: #Yes, we retry
+            logged_in = False
+            add_item(args,
+                     {'title': args._lang(30206),
+                      'mode':  'bad_login'})
+            endofdirectory()
+
+    if logged_in: 
         xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 
         check_mode(args)
