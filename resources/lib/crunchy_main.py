@@ -466,7 +466,7 @@ def main():
             endofdirectory()
 
     if logged_in: 
-        xbmcplugin.setContent(int(sys.argv[1]), 'movies')
+        xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
 
         check_mode(args)
 
