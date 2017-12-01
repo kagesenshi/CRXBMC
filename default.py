@@ -21,7 +21,7 @@ import xbmc
 import xbmcaddon
 
 
-_plugId = 'plugin.video.crunchyroll-takeout'
+_plugId = 'plugin.video.crunchyroll-takeout-regionfree'
 
 # Plugin constants
 __plugin__    = "Crunchyroll"

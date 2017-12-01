@@ -49,7 +49,6 @@ import dateutil.parser
 import dateutil.relativedelta as durel
 
 import crunchy_main as crm
-from cr_unblocker import makeSessionRequest
 
 
 __version__   = sys.modules["__main__"].__version__
@@ -1278,8 +1277,6 @@ def makeAPIRequest(args, method, options):
     """Make Crunchyroll JSON API call.
 
     """
-    if method == 'start_session':
-        return makeSessionRequest(args, method, options)
 
     if args.user_data['premium_type'] in 'anime|drama|manga|UNKNOWN':
         log("CR: makeAPIRequest: get JSON")
@@ -1306,7 +1303,19 @@ def makeAPIRequest(args, method, options):
         opener.addheaders = args.user_data['API_HEADERS']
         urllib2.install_opener(opener)
 
-        url = args.user_data['API_URL'] + "/" + method + ".0.json"
+        if method == 'start_session':
+            values = {
+                "version": "1.1",
+                "user_id": args.user_data['username']
+            }
+            auth_token = args.user_data.get('auth_token', None)
+            if auth_token:
+                values["auth"] = auth_token
+            options = None
+            qs = urllib.urlencode(values)
+            url = 'https://api2.cr-unblocker.com/start_session?%s' % qs
+        else:
+            url = args.user_data['API_URL'] + "/" + method + ".0.json"
 
         log("CR: makeAPIRequest: url = %s" % url)
         log("CR: makeAPIRequest: options = %s" % options)
