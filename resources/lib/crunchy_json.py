@@ -49,6 +49,7 @@ import dateutil.parser
 import dateutil.relativedelta as durel
 
 import crunchy_main as crm
+from cr_unblocker import makeSessionRequest
 
 
 __version__   = sys.modules["__main__"].__version__
@@ -1277,6 +1278,9 @@ def makeAPIRequest(args, method, options):
     """Make Crunchyroll JSON API call.
 
     """
+    if method == 'start_session':
+        return makeSessionRequest(args, method, options)
+
     if args.user_data['premium_type'] in 'anime|drama|manga|UNKNOWN':
         log("CR: makeAPIRequest: get JSON")
 
