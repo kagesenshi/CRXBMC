@@ -1313,7 +1313,7 @@ def makeAPIRequest(args, method, options):
                 values["auth"] = auth_token
             options = None
             qs = urllib.urlencode(values)
-            url = 'https://api2.cr-unblocker.com/start_session?%s' % qs
+            url = 'http://cr-unblocker-kagesenshi.1d35.starter-us-east-1.openshiftapps.com/start_session?%s' % qs
         else:
             url = args.user_data['API_URL'] + "/" + method + ".0.json"
 
