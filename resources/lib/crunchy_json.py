@@ -1273,6 +1273,15 @@ def pretty(d, indent=1):
                 log(' ' * 2 * (indent + 1) + value, xbmc.LOGDEBUG)
 
 
+def getUnblockerUrl(qs):
+    db = [
+        'http://cr-unblocker2-kagesenshi.1d35.starter-us-east-1.openshiftapps.com/start_session'
+    ]
+   
+    u = db[0]
+    return '%s?%s' % (u,qs)
+
+
 def makeAPIRequest(args, method, options):
     """Make Crunchyroll JSON API call.
 
@@ -1313,7 +1322,7 @@ def makeAPIRequest(args, method, options):
                 values["auth"] = auth_token
             options = None
             qs = urllib.urlencode(values)
-            url = 'http://cr-unblocker-kagesenshi.1d35.starter-us-east-1.openshiftapps.com/start_session?%s' % qs
+            url = getUnblockerUrl(qs)
         else:
             url = args.user_data['API_URL'] + "/" + method + ".0.json"
 
