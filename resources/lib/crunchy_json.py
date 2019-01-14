@@ -1275,7 +1275,7 @@ def pretty(d, indent=1):
 
 def getUnblockerUrl(qs):
     db = [
-        'http://cr-unblocker2-kagesenshi.1d35.starter-us-east-1.openshiftapps.com/start_session'
+        'https://aso0zshh1j.execute-api.us-east-2.amazonaws.com/latest/start_session'
     ]
    
     u = db[0]

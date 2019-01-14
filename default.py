@@ -25,7 +25,7 @@ _plugId = 'plugin.video.crunchyroll-takeout-regionfree'
 
 # Plugin constants
 __plugin__    = "Crunchyroll"
-__version__   = "2.2.3"
+__version__   = "2.2.4"
 __XBMCBUILD__ = xbmc.getInfoLabel("System.BuildVersion")
 __settings__  = xbmcaddon.Addon(id=_plugId)
 __language__  = __settings__.getLocalizedString
