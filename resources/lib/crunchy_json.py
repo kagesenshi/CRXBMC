@@ -109,6 +109,10 @@ def load_pickle(args):
         user_data['username'] = args._addon.getSetting("crunchy_username")
         user_data['password'] = args._addon.getSetting("crunchy_password")
 
+        user_data['http_proxy'] = args._addon.getSetting("http_proxy")
+        user_data['https_proxy'] = args._addon.getSetting("https_proxy")
+
+
         if 'device_id' not in user_data:
             char_set  = string.ascii_letters + string.digits
             device_id = 'FFFF'+''.join(random.sample(char_set, 4))+'-KODI-'+''.join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 12))
@@ -1302,13 +1306,29 @@ def makeAPIRequest(args, method, options):
 
         values.update(options)
         options = urllib.urlencode(values)
-        
-        if sys.version_info >= (2, 7, 9):
-            handler = urllib2.HTTPSHandler()
-        else:
-            handler = urllib2_ssl.HTTPSHandler(ca_certs=path)
 
-        opener = urllib2.build_opener(handler)
+        handlers = []
+        if sys.version_info >= (2, 7, 9):
+            handlers.append(urllib2.HTTPSHandler())
+        else:
+            handlers.append(urllib2_ssl.HTTPSHandler(ca_certs=path))
+
+        proxies = {}
+
+        # allow proxying API requests
+        if os.environ.get('HTTP_PROXY', None):
+            proxies['http'] = os.environ['HTTP_PROXY']
+        if args.user_data['http_proxy'].strip():
+            proxies['http'] = args.user_data['http_proxy']
+        if os.environ.get('HTTPS_PROXY', None):
+            proxies['https'] = os.environ['HTTPS_PROXY']
+        if args.user_data['https_proxy'].strip():
+            proxies['https'] = args.user_data['https_proxy']
+
+        if proxies:
+            handlers.append(urllib2.ProxyHandler(proxies))
+
+        opener = urllib2.build_opener(*handlers)
         opener.addheaders = args.user_data['API_HEADERS']
         urllib2.install_opener(opener)
 

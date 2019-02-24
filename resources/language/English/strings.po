@@ -274,3 +274,10 @@ msgctxt "#30604"
 msgid "Off"
 msgstr ""
 
+msgctxt "#30701"
+msgid "HTTP Proxy"
+msgstr ""
+
+msgctxt "#30702"
+msgid "HTTPS Proxy"
+msgstr ""
