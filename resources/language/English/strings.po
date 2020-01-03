@@ -281,3 +281,7 @@ msgstr ""
 msgctxt "#30702"
 msgid "HTTPS Proxy"
 msgstr ""
+
+msgctxt "#30703"
+msgid "Proxy Enabled"
+msgstr ""

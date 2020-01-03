@@ -315,12 +315,13 @@ def _restart_session(args,
 
     if request['error'] is False:
         args.user_data['session_id']      = request['data']['session_id']
-        args.user_data['auth_expires']    = dateutil.parser.parse(request['data']['expires'])
-        args.user_data['premium_type']    = ('free'
-                                                 if request['data']['user']['premium'] == ''
-                                                 else request['data']['user']['premium'])
-        args.user_data['auth_token']      = request['data']['auth']
-        # 4 hours is a guess. Might be +/- 4.
+        if request['data']['expires']:
+            request_exp = dateutil.parser.parse(request['data']['expires'])
+        else:
+            request_exp = (
+                current_datetime + durel.relativedelta(hours = +4)
+            )
+        args.user_data['auth_expires']    = request_exp
         args.user_data['session_expires'] = (current_datetime +
                                              durel.relativedelta(hours = +4))
         args.user_data['test_session']    = current_datetime
@@ -1053,11 +1054,14 @@ def start_playback(args):
     """Play video stream with selected quality.
 
     """
+
     res_quality = ['low', 'mid', 'high', 'ultra', 'adaptive']
     if not hasattr(args, 'quality'): #Normal playback
         quality     = res_quality[int(args._addon.getSetting("video_quality"))]
     else: #One-off at different quality
         quality     = res_quality[int(args.quality)]
+
+    log('CR:Selected Quality = %s' % quality)
 
     fields = "".join(["media.episode_number,",
                       "media.playhead,",
@@ -1104,6 +1108,9 @@ def start_playback(args):
         if request['data']['stream_data'] is not None:
             for stream in request['data']['stream_data']['streams']:
                 allurl[stream['quality']] = stream['url']
+
+            log('CR: start_playback: available qualities: %s' % (
+                ', '.join(allurl.keys())))
 
             log("CR: start_playback: streams found: " + str(allurl), xbmc.LOGDEBUG)
             is_adaptive = False
@@ -1316,15 +1323,16 @@ def makeAPIRequest(args, method, options):
         proxies = {}
 
         # allow proxying API requests
-        if os.environ.get('HTTP_PROXY', None):
-            proxies['http'] = os.environ['HTTP_PROXY']
-        if args.user_data['http_proxy'].strip():
-            proxies['http'] = args.user_data['http_proxy']
-        if os.environ.get('HTTPS_PROXY', None):
-            proxies['https'] = os.environ['HTTPS_PROXY']
-        if args.user_data['https_proxy'].strip():
-            proxies['https'] = args.user_data['https_proxy']
-
+        if args.user_data.get('enable_proxy', False):
+            if os.environ.get('HTTP_PROXY', None):
+                proxies['http'] = os.environ['HTTP_PROXY']
+            if args.user_data['http_proxy'].strip():
+                proxies['http'] = args.user_data['http_proxy']
+            if os.environ.get('HTTPS_PROXY', None):
+                proxies['https'] = os.environ['HTTPS_PROXY']
+            if args.user_data['https_proxy'].strip():
+                proxies['https'] = args.user_data['https_proxy']
+    
         if proxies:
             handlers.append(urllib2.ProxyHandler(proxies))
 

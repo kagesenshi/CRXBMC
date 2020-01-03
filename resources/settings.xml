@@ -3,6 +3,7 @@
   <category label="30508"> <!-- General -->
     <setting id="crunchy_username" type="text" label="30001" default=""/>
     <setting id="crunchy_password" type="text" label="30002" option="hidden" default=""/>
+    <setting id="enable_proxy" type="bool" label="30703" default="false" />
     <setting id="http_proxy" type="text" label="30701" default=""/>
     <setting id="https_proxy" type="text" label="30702" default=""/>
     <setting type="sep" />
