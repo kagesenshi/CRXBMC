@@ -111,6 +111,8 @@ def load_pickle(args):
 
         user_data['http_proxy'] = args._addon.getSetting("http_proxy")
         user_data['https_proxy'] = args._addon.getSetting("https_proxy")
+        user_data['enable_proxy'] = args._addon.getSetting("enable_proxy")
+        user_data['unblocker_endpoint'] = args._addon.getSetting("unblocker_endpoint")
 
 
         if 'device_id' not in user_data:
@@ -1284,12 +1286,43 @@ def pretty(d, indent=1):
                 log(' ' * 2 * (indent + 1) + value, xbmc.LOGDEBUG)
 
 
-def getUnblockerUrl(qs):
-    db = [
-        'https://aso0zshh1j.execute-api.us-east-2.amazonaws.com/latest/start_session'
+def getUnblockerUrl(qs, opener, userdata):
+    default = userdata.get('unblocker_endpoint', None)
+    builtin = 'https://api1.cr-unblocker.com/getsession.php'
+    db = []
+    if default:
+        db.append(default)
+
+    if builtin not in db:
+        db.append(builtin)
+
+    alternatives = [
+        'https://aso0zshh1j.execute-api.us-east-2.amazonaws.com/latest/start_session',
     ]
-   
-    u = db[0]
+
+    db += alternatives
+
+    found = None
+    for url in db:
+        try:
+            log('CR: Checking Endpoint %s' % url)
+            req = opener.open(url)
+            found = url
+            break
+        except (httplib.BadStatusLine,
+                socket.error,
+                urllib2.HTTPError,
+                urllib2.URLError) as e:
+            log('CR: Unable to connect to endpoint: %r' % e, xbmc.LOGERROR)
+            continue
+
+    if not found:
+        log("CR: Unable to find usable CR Unblocker Endpoint")
+        u = builtin
+    else:
+        log("CR: Using CR Unblocker Endpoint : %s" % (found))
+        u = found
+
     return '%s?%s' % (u,qs)
 
 
@@ -1323,7 +1356,8 @@ def makeAPIRequest(args, method, options):
         proxies = {}
 
         # allow proxying API requests
-        if args.user_data.get('enable_proxy', False):
+        if args.user_data.get('enable_proxy', 'false') == 'true':
+
             if os.environ.get('HTTP_PROXY', None):
                 proxies['http'] = os.environ['HTTP_PROXY']
             if args.user_data['http_proxy'].strip():
@@ -1332,6 +1366,8 @@ def makeAPIRequest(args, method, options):
                 proxies['https'] = os.environ['HTTPS_PROXY']
             if args.user_data['https_proxy'].strip():
                 proxies['https'] = args.user_data['https_proxy']
+            log('CR: Using proxy http=%s & https=%s' % (proxies['http'],
+                proxies['https']))
     
         if proxies:
             handlers.append(urllib2.ProxyHandler(proxies))
@@ -1350,7 +1386,7 @@ def makeAPIRequest(args, method, options):
                 values["auth"] = auth_token
             options = None
             qs = urllib.urlencode(values)
-            url = getUnblockerUrl(qs)
+            url = getUnblockerUrl(qs, opener, args.user_data)
         else:
             url = args.user_data['API_URL'] + "/" + method + ".0.json"
 

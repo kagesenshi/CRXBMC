@@ -285,3 +285,8 @@ msgstr ""
 msgctxt "#30703"
 msgid "Proxy Enabled"
 msgstr ""
+
+
+msgctxt "#30709"
+msgid "CR Unblocker Endpoint"
+msgstr ""
