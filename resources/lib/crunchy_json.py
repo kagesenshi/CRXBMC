@@ -36,6 +36,7 @@ except:
 import ssl
 import urllib
 import urllib2
+import urlparse
 import httplib
 import urllib2_ssl
 
@@ -76,7 +77,9 @@ def load_pickle(args):
     try:
         # Load persistent vars
         user_data = pickle.load(open(pickle_path))
-
+        # delete existing session
+        # if 'session_id' in user_data:
+        #     del user_data['session_id']
     except:
         log("CR: Unable to load pickle")
         
@@ -117,7 +120,7 @@ def load_pickle(args):
 
         if 'device_id' not in user_data:
             char_set  = string.ascii_letters + string.digits
-            device_id = 'FFFF'+''.join(random.sample(char_set, 4))+'-KODI-'+''.join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 12))
+            device_id = join(random.sample(char_set, 4))+''.join(random.sample(char_set, 4))+'-'+join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 4))+'-'+''.join(random.sample(char_set, 12))
             user_data["device_id"] = device_id
             log("CR: New device_id created. New device ID: "
                 + str(device_id))
@@ -128,10 +131,10 @@ def load_pickle(args):
                                     ('Accept',          "*/*"),
                                     ('Content-Type',    "application/x-www-form-urlencoded")]
 
-        user_data['API_URL']          = "https://api.crunchyroll.com"
+        user_data['API_URL']          = user_data['unblocker_endpoint']
         user_data['API_VERSION']      = "2313.8"
-        user_data['API_ACCESS_TOKEN'] = "QWjz212GspMHH9h"
-        user_data['API_DEVICE_TYPE']  = "com.crunchyroll.iphone"
+        user_data['API_ACCESS_TOKEN'] = "FLpcfZH4CbW4muO"
+        user_data['API_DEVICE_TYPE']  = "com.crunchyroll.manga.android"
 
         user_data.setdefault('premium_type', 'UNKNOWN')
         user_data.setdefault('lastreported', (current_datetime -
@@ -166,6 +169,18 @@ def load_pickle(args):
         log("CR: Unable to load pickle")
 
         return False
+
+
+    # Delete session ID and force refresh if country code is not US
+    if 'session_id' in user_data:
+        if 'session_country_code' in user_data:
+            if user_data['session_country_code'] != 'US':
+                del user_data['session_id']
+                del user_data['session_country_code']
+        else:
+            del user_data['session_id']
+
+
 
     # Check to see if a session_id doesn't exist or if the current
     # auth token is invalid and if so start a new session and log it in
@@ -244,12 +259,15 @@ def _start_session(args,
 
     if request['error'] is False:
         args.user_data['session_id']      = request['data']['session_id']
+        args.user_data['session_country_code'] = request['data']['country_code']
+
         args.user_data['session_expires'] = (current_datetime +
                                              durel.relativedelta(hours = +4))
         args.user_data['test_session']    = current_datetime
 
         log("CR: New session created!"
-            + " Session ID: " + str(args.user_data['session_id']))
+            + " Session ID: " + str(args.user_data['session_id']) + 
+            " Country Code: " + str(args.user_data['session_country_code']))
 
     elif request['error'] is True:
         log("CR: Error starting new session. Error message: "
@@ -1287,20 +1305,10 @@ def pretty(d, indent=1):
 
 
 def getUnblockerUrl(qs, opener, userdata):
-    default = userdata.get('unblocker_endpoint', None)
-    builtin = 'https://api1.cr-unblocker.com/getsession.php'
+    default = userdata.get('unblocker_endpoint', None) + '/start_session.0.json'
     db = []
     if default:
         db.append(default)
-
-    if builtin not in db:
-        db.append(builtin)
-
-    alternatives = [
-        'https://aso0zshh1j.execute-api.us-east-2.amazonaws.com/latest/start_session',
-    ]
-
-    db += alternatives
 
     found = None
     for url in db:
@@ -1330,7 +1338,7 @@ def makeAPIRequest(args, method, options):
     """Make Crunchyroll JSON API call.
 
     """
-
+    opts = options
     if args.user_data['premium_type'] in 'anime|drama|manga|UNKNOWN':
         log("CR: makeAPIRequest: get JSON")
 
@@ -1378,15 +1386,18 @@ def makeAPIRequest(args, method, options):
 
         if method == 'start_session':
             values = {
-                "version": "1.1",
-                "user_id": args.user_data['username']
+                "version": "1.0",
+                "user_id": args.user_data['username'],
+                "access_token": opts['access_token'],
+                "device_id": opts['device_id'],
+                "device_type": opts['device_type']
             }
             auth_token = args.user_data.get('auth_token', None)
             if auth_token:
                 values["auth"] = auth_token
-            options = None
             qs = urllib.urlencode(values)
             url = getUnblockerUrl(qs, opener, args.user_data)
+            options = None
         else:
             url = args.user_data['API_URL'] + "/" + method + ".0.json"
 
