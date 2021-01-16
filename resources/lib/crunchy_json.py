@@ -26,8 +26,7 @@ import random
 import socket
 import string
 import datetime
-import StringIO
-import cookielib
+from io import BytesIO
 try:
     import cPickle as pickle
 except:
@@ -35,10 +34,10 @@ except:
 
 import ssl
 import urllib
-import urllib2
-import urlparse
-import httplib
-import urllib2_ssl
+import urllib.request
+import urllib.error
+import urllib.parse
+import http.client
 
 import xbmc
 import xbmcgui
@@ -49,7 +48,7 @@ import dateutil.tz
 import dateutil.parser
 import dateutil.relativedelta as durel
 
-import crunchy_main as crm
+from . import crunchy_main as crm
 
 
 __version__   = sys.modules["__main__"].__version__
@@ -65,7 +64,7 @@ def load_pickle(args):
 
     subtitle_language = args._addon.getSetting("subtitle_language")
 
-    base_path = xbmc.translatePath(args._addon.getAddonInfo('profile')).decode('utf-8')
+    base_path = xbmc.translatePath(args._addon.getAddonInfo('profile'))
 
     pickle_path = os.path.join(base_path, "cruchyPickle")
 
@@ -1159,7 +1158,7 @@ def start_playback(args):
                                                    "Season": args.season,
                                                    "Episode": args.episode,
                                                    "playcount":   playcount})
-            item.setThumbnailImage(args.icon)
+            item.setArt({'thumb': args.icon})
             item.setProperty('TotalTime',  args.duration)
 
             autoresume = ["no","yes","ask"][int(args._addon.getSetting("autoresume"))]
@@ -1251,7 +1250,7 @@ def get_random(args):
     print ("Media: " + media)
 
     try:
-        url = urllib2.urlopen("http://www.crunchyroll.com/random/" + media).geturl()
+        url = urllib.request.urlopen("http://www.crunchyroll.com/random/" + media).geturl()
     except:
         xbmcgui.Dialog().notification("Crunchyroll - Random","Unable to fetch random show",xbmcgui.NOTIFICATION_ERROR)
         return "False"
@@ -1292,15 +1291,12 @@ def pretty(d, indent=1):
             log('--', xbmc.LOGDEBUG)
             pretty(i, indent + 1)
     else:
-        for key, value in d.iteritems():
+        for key, value in d.items():
             log(' ' * 2 * indent + str(key), xbmc.LOGDEBUG)
             if isinstance(value, (dict, list)):
                 pretty(value, indent + 1)
             else:
-                if isinstance(value, unicode):
-                    value = value.encode('latin-1', 'ignore')
-                else:
-                    value = str(value)
+                value = str(value)
                 log(' ' * 2 * (indent + 1) + value, xbmc.LOGDEBUG)
 
 
@@ -1317,10 +1313,10 @@ def getUnblockerUrl(qs, opener, userdata):
             req = opener.open(url)
             found = url
             break
-        except (httplib.BadStatusLine,
+        except (http.client.BadStatusLine,
                 socket.error,
-                urllib2.HTTPError,
-                urllib2.URLError) as e:
+                urllib.error.HTTPError,
+                urllib.error.URLError) as e:
             log('CR: Unable to connect to endpoint: %r' % e, xbmc.LOGERROR)
             continue
 
@@ -1353,14 +1349,10 @@ def makeAPIRequest(args, method, options):
             values['session_id'] = args.user_data['session_id']
 
         values.update(options)
-        options = urllib.urlencode(values)
+        options = urllib.parse.urlencode(values).encode('utf-8')
 
         handlers = []
-        if sys.version_info >= (2, 7, 9):
-            handlers.append(urllib2.HTTPSHandler())
-        else:
-            handlers.append(urllib2_ssl.HTTPSHandler(ca_certs=path))
-
+        handlers.append(urllib.request.HTTPSHandler())
         proxies = {}
 
         # allow proxying API requests
@@ -1378,11 +1370,11 @@ def makeAPIRequest(args, method, options):
                 proxies['https']))
     
         if proxies:
-            handlers.append(urllib2.ProxyHandler(proxies))
+            handlers.append(urllib.request.ProxyHandler(proxies))
 
-        opener = urllib2.build_opener(*handlers)
+        opener = urllib.request.build_opener(*handlers)
         opener.addheaders = args.user_data['API_HEADERS']
-        urllib2.install_opener(opener)
+        urllib.request.install_opener(opener)
 
         if method == 'start_session':
             values = {
@@ -1395,7 +1387,7 @@ def makeAPIRequest(args, method, options):
             auth_token = args.user_data.get('auth_token', None)
             if auth_token:
                 values["auth"] = auth_token
-            qs = urllib.urlencode(values)
+            qs = urllib.parse.urlencode(values)
             url = getUnblockerUrl(qs, opener, args.user_data)
             options = None
         else:
@@ -1412,17 +1404,17 @@ def makeAPIRequest(args, method, options):
             json_data = req.read()
 
             if req.headers.get('content-encoding', None) == 'gzip':
-                json_data = gzip.GzipFile(fileobj=StringIO.StringIO(json_data))
+                json_data = gzip.GzipFile(fileobj=BytesIO(json_data))
                 json_data = json_data.read().decode('utf-8', 'ignore')
 
             req.close()
 
             request = json.loads(json_data)
 
-        except (httplib.BadStatusLine,
+        except (http.client.BadStatusLine,
                 socket.error,
-                urllib2.HTTPError,
-                urllib2.URLError) as e:
+                urllib.error.HTTPError,
+                urllib.error.URLError) as e:
 
             log("CR: makeAPIRequest: Connection failed: %r" % e,
                 xbmc.LOGERROR)
@@ -1453,7 +1445,7 @@ def makeAPIRequest(args, method, options):
 
 
 def log(msg,
-        level=xbmc.LOGNOTICE,
+        level=xbmc.LOGINFO,
         rex=re.compile(r"((?<=password=)[^&]*"
                        r"|(?<=account=)[^&]*"
                        r"|(?<='password':\s')[^']*"

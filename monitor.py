@@ -10,7 +10,7 @@ class _Monitor(xbmc.Monitor):
     #Are we somehow requested to leave?
     def onLeave(self):
         return (self.__leave or 
-                xbmc.Monitor().onAbortRequested()
+                xbmc.Monitor().waitForAbort()
                )
 
     #Main catcher

@@ -19,6 +19,7 @@ import os
 import re
 import sys
 import urllib
+import urllib.parse
 try:
     import cPickle as pickle
 except:
@@ -28,9 +29,9 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-import crunchy_json as crj
+from . import crunchy_json as crj
 
-from crunchy_json import log
+from .crunchy_json import log
 
 
 class Args(object):
@@ -46,14 +47,14 @@ class Args(object):
         Hold also references to the addon which can't be kept at module level.
         """
         self._addon = sys.modules['__main__'].__settings__
-        self._lang  = encode(sys.modules['__main__'].__language__)
+        self._lang  = sys.modules['__main__'].__language__
         self._id    = self._addon.getAddonInfo('id')
 
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             if value == 'None':
                 kwargs[key] = None
             else:
-                kwargs[key] = urllib.unquote_plus(kwargs[key])
+                kwargs[key] = urllib.parse.unquote_plus(kwargs[key])
         self.__dict__.update(kwargs)
 
 
@@ -115,10 +116,14 @@ def set_info_defaults (args,info):
     info.setdefault('duration',     '0')
     info.setdefault('episode',      '0')
     info.setdefault('plot',         'None')
-    info.setdefault('percent',      '0')
+    info.setdefault('percent',      0)
     info.setdefault('ordering',     '0')
     #And set all None to 'None'
     for key, value in info.items():
+        if isinstance(value, bytes):
+            info[key] = value.decode('utf-8')
+        if key in ['percent']:
+            info[key] = int(value)
         if value == None:
             info[key] = 'None'
     return info
@@ -127,24 +132,24 @@ def set_info_defaults (args,info):
 def build_url (info):
     # Create params for xbmcplugin module
     s = sys.argv[0]    +\
-        '?url='        + urllib.quote_plus(info['url'])          +\
-        '&mode='       + urllib.quote_plus(info['mode'])         +\
-        '&name='       + urllib.quote_plus(info['title'])        +\
-        '&id='         + urllib.quote_plus(info['id'])           +\
-        '&count='      + urllib.quote_plus(info['count'])        +\
-        '&series_id='  + urllib.quote_plus(info['series_id'])    +\
-        '&filterx='    + urllib.quote_plus(info['filterx'])      +\
-        '&offset='     + urllib.quote_plus(info['offset'])       +\
-        '&icon='       + urllib.quote_plus(info['thumb'])        +\
-        '&complete='   + urllib.quote_plus(info['complete'])     +\
-        '&fanart='     + urllib.quote_plus(info['fanart_image']) +\
-        '&season='     + urllib.quote_plus(info['season'])       +\
-        '&media_type=' + urllib.quote_plus(info['media_type'])   +\
-        '&year='       + urllib.quote_plus(info['year'])         +\
-        '&playhead='   + urllib.quote_plus(info['playhead'])     +\
-        '&duration='   + urllib.quote_plus(info['duration'])     +\
-        '&episode='    + urllib.quote_plus(info['episode'])      +\
-        '&plot='       + urllib.quote_plus(info['plot']          +'%20')
+        '?url='        + urllib.parse.quote_plus(info['url'])          +\
+        '&mode='       + urllib.parse.quote_plus(info['mode'])         +\
+        '&name='       + urllib.parse.quote_plus(info['title'])        +\
+        '&id='         + urllib.parse.quote_plus(info['id'])           +\
+        '&count='      + urllib.parse.quote_plus(info['count'])        +\
+        '&series_id='  + urllib.parse.quote_plus(info['series_id'])    +\
+        '&filterx='    + urllib.parse.quote_plus(info['filterx'])      +\
+        '&offset='     + urllib.parse.quote_plus(info['offset'])       +\
+        '&icon='       + urllib.parse.quote_plus(info['thumb'])        +\
+        '&complete='   + urllib.parse.quote_plus(info['complete'])     +\
+        '&fanart='     + urllib.parse.quote_plus(info['fanart_image']) +\
+        '&season='     + urllib.parse.quote_plus(info['season'])       +\
+        '&media_type=' + urllib.parse.quote_plus(info['media_type'])   +\
+        '&year='       + urllib.parse.quote_plus(info['year'])         +\
+        '&playhead='   + urllib.parse.quote_plus(info['playhead'])     +\
+        '&duration='   + urllib.parse.quote_plus(info['duration'])     +\
+        '&episode='    + urllib.parse.quote_plus(info['episode'])      +\
+        '&plot='       + urllib.parse.quote_plus(info['plot']          +'%20')
     return s
 
 
@@ -180,8 +185,8 @@ def add_item(args,
     mode = "None" if (args.mode is None) else args.mode
 
     # Create list item
-    li = xbmcgui.ListItem(label          = info['title'],
-                          thumbnailImage = info['thumb'])
+    li = xbmcgui.ListItem(label          = info['title'])
+    li.setArt({'thumb': info['thumb']})
 
     percentPlayed = " "
     if ((int(info['percent']) > 0) and (boolSetting("show_percent"))):
@@ -371,8 +376,12 @@ def parse_args():
 
     """
     if (sys.argv[2]):
-        return Args(**dict([p.split('=')
-                                for p in sys.argv[2][1:].split('&')]))
+        log('CR %s' % sys.argv)
+        params = [p.split('=') for p in sys.argv[2][1:].split('&')]
+        for idx, item in enumerate(params):
+            if len(item) == 1:
+                item.append('None')
+        return Args(**dict(params))
 
     else:
         # Args will turn the 'None' into None.
